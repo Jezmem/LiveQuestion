@@ -12,11 +12,12 @@ class UserFixtures extends Fixture
     {
         // Liste des auteurs
         $users = [
-            ['username' => 'Jezmem', 'email' => 'tomzarb98@gmail.com', 'password' => 'kk'],
-            ['username' => 'TWhiteShadow', 'email' => 'raphael.t.hendrick@gmail.com', 'password' => 'kk'],
-            ['username' => 'Galeih', 'email' => 'florian.sauvage.etudiant@gmail.com', 'password' => 'kk'],
-            ['username' => 'Magiks', 'email' => 'dupaslucas8@gmail.com', 'password' => 'kk'],
-            ['username' => 'Okinest', 'email' => 'theoalleaume@gmail.com', 'password' => 'kk'],
+            ['username' => 'Jezmem', 'email' => 'tomzarb98@gmail.com', 'password' => 'kk', 'first_name' => 'Tom', 'last-name' => 'Zarb'],
+            ['username' => 'TWhiteShadow', 'email' => 'raphael.t.hendrick@gmail.com', 'password' => 'kk', 'first_name' => 'Raphael', 'last-name' => 'Tourssel'],
+            ['username' => 'Galeih', 'email' => 'florian.sauvage.etudiant@gmail.com', 'password' => 'kk', 'first_name' => 'Florian', 'last-name' => 'Sauvage'],
+            ['username' => 'Magiks', 'email' => 'dupaslucas8@gmail.com', 'password' => 'kk', 'first_name' => 'Lucas', 'last-name' => 'Dupas'],
+            ['username' => 'Okinest', 'email' => 'theoalleaume@gmail.com', 'password' => 'kk', 'first_name' => 'Theo', 'last-name' => 'Alleaume'],
+            ['username' => 'Yamosai', 'email' => 'moncet.yannis@gmail.com', 'password' => 'kk', 'first_name' => 'Yannis', 'last-name' => 'Moncet'],
         ];
 
         foreach ($users as $userData) {
@@ -24,6 +25,8 @@ class UserFixtures extends Fixture
             $user->setUsername($userData['username']);
             $user->setEmail($userData['email']);
             $user->setPassword($userData['password']);
+            $user->setFirstName($userData['first_name']);
+            $user->setLastName($userData['last-name']);
 
             $manager->persist($user);
         }
