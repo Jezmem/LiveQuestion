@@ -6,10 +6,11 @@ use App\Entity\Question;
 use App\Entity\User;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class QuestionFixtures extends Fixture implements DependentFixtureInterface
+class QuestionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -18,42 +19,42 @@ class QuestionFixtures extends Fixture implements DependentFixtureInterface
             [
                 'title' => 'Est-ce que la France est à la hauteur sur cette coupe d’Euro ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'euroCup.jpg',
+                'image' => 'euroCup.svg',
                 'user' => 'Jezmem',
                 'category' => 'Sport',
             ],
             [
                 'title' => 'CS2 vs Valorant, quel jeu est le meilleur au quotidien ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'cs2VsValo.jpg',
+                'image' => 'cs2VsValo.svg',
                 'user' => 'TWhiteShadow',
                 'category' => 'Technologie',
             ],
             [
                 'title' => 'Que pensez-vous de la performance de Pierre Niney dans le comte de Monte Cristo ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'monteCristo.jpg',
+                'image' => 'monteCristo.svg',
                 'user' => 'Galeih',
                 'category' => 'Cinéma',
             ],
             [
                 'title' => 'Suivez-vous le tour de France cette année ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'franceTour.jpg',
+                'image' => 'franceTour.svg',
                 'user' => 'Magiks',
                 'category' => 'Sport',
             ],
             [
                 'title' => 'MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'MMA.jpg',
+                'image' => 'MMA.svg',
                 'user' => 'Okinest',
                 'category' => 'Sport',
             ],
             [
                 'title' => 'Que pensez-vous de la série Game of thrones house of the dragon ?',
                 'publicationDate' => '13/08/2024',
-                'image' => 'GOT.jpg',
+                'image' => 'got.svg',
                 'user' => 'Yamosai',
                 'category' => 'Cinéma',
             ],
@@ -85,6 +86,10 @@ class QuestionFixtures extends Fixture implements DependentFixtureInterface
         }
 
         $manager->flush();
+    }
+    public static function getGroups(): array
+    {
+        return ['main_data'];
     }
 
     public function getDependencies()

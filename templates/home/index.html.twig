@@ -4,6 +4,236 @@
 {% endblock %}
 
 {% block body %}
-	<style></style>
+	<div style="margin:3%;">
+		<div class="d-flex align-items-center">
+			<img src="image/{{ derniere_question.image }}" class="img-responsive">
+			<div class="last-question-element ms-5">
+				<div class="d-flex align-items-center fs-4">
+					<p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
+					<p class="mb-0 fw-bold px-2">.</p>
+					<p class="mb-0">
+						{% set minutes = (now|date('U') - derniere_question.publicationDate|date('U')) // 60 %}
+						{{ minutes }}
+						minutes
+					</p>
+				</div>
+				<p class="fs-2 fw-medium my-2">{{ derniere_question.title }}</p>
+				<p class="fs-4 text-custom">{{ derniere_question.Answer|length }}
+					réponses - par
+					{{ derniere_question.user.username }}</p>
+			</div>
+		</div>
 
+
+		<h1 class="section-title">Dernières questions</h1>
+
+		<div class="d-flex justify-content-between my-3">
+			{% for question in dernieres_questions %}
+				<div class="questions">
+					<img class="questions-image" src="image/{{ question.image }}">
+					<p class="questions-text">{{ question.title }}</p>
+					<p class="text-custom">
+						{{ question.Answer|length }}
+						réponses - Par
+						{{ question.user.username }}
+						-
+						{% set minutes = (now|date('U') - question.publicationDate|date('U')) // 60 %}
+						Il y a
+						{{ minutes }}
+						minutes
+					</p>
+				</div>
+			{% endfor %}
+		</div>
+
+
+		<h1 class="section-title">Meilleurs auteurs</h1>
+
+		<div class="d-flex justify-content-between" style="margin:2% 0;">
+			<div class="authors-ranking">
+				<p class="authors-ranking-number">1</p>
+				<div>
+					<p class="authors-ranking-name">Jeff Martins</p>
+					<p class="authors-ranking-question">30 questions</p>
+				</div>
+			</div>
+
+			<div class="authors-ranking">
+				<p class="authors-ranking-number">2</p>
+				<div>
+					<p class="authors-ranking-name">Jonathan Cholet</p>
+					<p class="authors-ranking-question">28 questions</p>
+				</div>
+			</div>
+
+			<div class="authors-ranking">
+				<p class="authors-ranking-number">3</p>
+				<div>
+					<p class="authors-ranking-name">Adrien Turcey</p>
+					<p class="authors-ranking-question">27 questions</p>
+				</div>
+			</div>
+
+			<div class="authors-ranking">
+				<p class="authors-ranking-number">4</p>
+				<div>
+					<p class="authors-ranking-name">Thomas Myg</p>
+					<p class="authors-ranking-question">27 questions</p>
+				</div>
+			</div>
+
+			<div class="authors-ranking">
+				<p class="authors-ranking-number">5</p>
+				<div>
+					<p class="authors-ranking-name">Julien Moutet</p>
+					<p class="authors-ranking-question">27 questions</p>
+				</div>
+			</div>
+		</div>
+
+
+		<h1 class="section-title">Dans la thématique “Sport”</h1>
+
+		<div class="d-flex justify-content-between" style="margin:2% 0;">
+			<div class"questions">
+				<img class="questions-image" src="image/eurocup.svg">
+				<p class="questions-text">Est-ce que la France est à la hauteur sur cette coupe d’Euro ?</p>
+				<p class="text-custom">3 réponses  - Par Jeff Martins - Il y a 30 minutes</p>
+			</div>
+
+			<div class"questions">
+				<img class="questions-image" src="image/franceTour.svg">
+				<p class="questions-text">Suivez-vous le tour de France cette année ?</p>
+				<p class="text-custom">5 réponses  - Par Adrien Turcey - Il y a 2 jours</p>
+			</div>
+
+			<div class"questions">
+				<img class="questions-image" src="image/MMA.svg">
+				<p class="questions-text">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
+				<p class="text-custom">90 réponses  - Par Raphaël  - Il y a 5 jours</p>
+			</div>
+		</div>
+
+
+		<h1 class="section-title">Questions aléatoires</h1>
+
+		<div class="row">
+			<div class="col-lg-6 mb-4">
+				<div class="p-3">
+					<img class="img-fluid w-100 mb-3" src="image/eurocup.svg">
+					<p class="fs-3 fw-bold">Est-ce que la France est à la hauteur sur cette coupe d’Euro ?</p>
+					<p class="text-custom">3 réponses - Par Jeff Martins - Il y a 30 minutes</p>
+				</div>
+			</div>
+
+			<div class="col-lg-6 d-flex flex-wrap">
+				<div class="col-6 p-2">
+					<div class="p-3 h-100">
+						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
+						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
+						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
+					</div>
+				</div>
+				<div class="col-6 p-2">
+					<div class="p-3 h-100">
+						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
+						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
+						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
+					</div>
+				</div>
+				<div class="col-6 p-2">
+					<div class="secondary-random-questions p-3 h-100">
+						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
+						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
+						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
+					</div>
+				</div>
+				<div class="col-6 p-2">
+					<div class="p-3 h-100">
+						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
+						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
+						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<style>
+		.section-title {
+			margin-top: 3%;
+			font-size: 300%;
+			font-weight: 600
+		}
+
+
+		.img-responsive {
+			width: 30vw;
+			max-width: 100%;
+			height: auto;
+		}
+		.text-custom {
+			color: #AD0569;
+		}
+
+
+		.questions {
+			display: flex;
+			flex-direction: column;
+			margin: 0 2%;
+		}
+		.questions-text {
+			font-size: 125%;
+			margin: 2% 0;
+			width: 24vw;
+			max-width: 100%;
+		}
+		.questions-image {
+			width: 25vw;
+			max-width: 100%;
+			height: auto;
+		}
+
+
+		.authors-ranking {
+			display: flex;
+			align-items: center;
+		}
+		.authors-ranking-number {
+			font-size: 500%;
+			font-weight: 500;
+			color: #AD0569;
+			margin: 0;
+		}
+		.authors-ranking-name {
+			font-size: 200%;
+			font-weight: 600;
+			margin: 0;
+			text-wrap: nowrap;
+		}
+		.authors-ranking-question {
+			font-size: 150%;
+			margin: 0;
+			text-wrap: nowrap;
+		}
+
+		.main-random-questions-questions {
+			display: flex;
+			flex-direction: column;
+			margin: 0 2%;
+		}
+		.main-random-questions-questions-text {
+			font-size: 150%;
+			margin: 2% 0;
+			width: 24vw;
+			max-width: 100%;
+		}
+		.main-random-questions-image {
+			width: 40vw;
+			max-width: 100%;
+			height: auto;
+		}
+	</style>
 {% endblock %}
