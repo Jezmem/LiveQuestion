@@ -29,7 +29,10 @@
 
 		<div class="d-flex justify-content-between my-3">
 			{% for question in dernieres_questions %}
-				<div class="questions">
+				<div
+					class="questions position-relative">
+					<!-- Catégorie affichée en haut à droite de l'image -->
+					<div class="category-label">{{ question.category.name }}</div>
 					<img class="questions-image" src="image/{{ question.image }}">
 					<p class="questions-text">{{ question.title }}</p>
 					<p class="text-custom">
@@ -49,114 +52,85 @@
 
 		<h1 class="section-title">Meilleurs auteurs</h1>
 
-		<div class="d-flex justify-content-between" style="margin:2% 0;">
-			<div class="authors-ranking">
-				<p class="authors-ranking-number">1</p>
-				<div>
-					<p class="authors-ranking-name">Jeff Martins</p>
-					<p class="authors-ranking-question">30 questions</p>
+		<div class="d-flex justify-content-between my-3">
+			{% for auteur in meilleurs_auteurs %}
+				<div class="authors-ranking">
+					<p class="authors-ranking-number">{{ loop.index }}</p>
+					<div>
+						<p class="authors-ranking-name">{{ auteur.firstname }}
+							{{ auteur.lastname }}</p>
+						<p class="authors-ranking-question">{{ auteur.Question|length }}
+							questions</p>
+					</div>
 				</div>
-			</div>
-
-			<div class="authors-ranking">
-				<p class="authors-ranking-number">2</p>
-				<div>
-					<p class="authors-ranking-name">Jonathan Cholet</p>
-					<p class="authors-ranking-question">28 questions</p>
-				</div>
-			</div>
-
-			<div class="authors-ranking">
-				<p class="authors-ranking-number">3</p>
-				<div>
-					<p class="authors-ranking-name">Adrien Turcey</p>
-					<p class="authors-ranking-question">27 questions</p>
-				</div>
-			</div>
-
-			<div class="authors-ranking">
-				<p class="authors-ranking-number">4</p>
-				<div>
-					<p class="authors-ranking-name">Thomas Myg</p>
-					<p class="authors-ranking-question">27 questions</p>
-				</div>
-			</div>
-
-			<div class="authors-ranking">
-				<p class="authors-ranking-number">5</p>
-				<div>
-					<p class="authors-ranking-name">Julien Moutet</p>
-					<p class="authors-ranking-question">27 questions</p>
-				</div>
-			</div>
+			{% endfor %}
 		</div>
 
 
 		<h1 class="section-title">Dans la thématique “Sport”</h1>
 
 		<div class="d-flex justify-content-between" style="margin:2% 0;">
-			<div class"questions">
-				<img class="questions-image" src="image/eurocup.svg">
-				<p class="questions-text">Est-ce que la France est à la hauteur sur cette coupe d’Euro ?</p>
-				<p class="text-custom">3 réponses  - Par Jeff Martins - Il y a 30 minutes</p>
-			</div>
-
-			<div class"questions">
-				<img class="questions-image" src="image/franceTour.svg">
-				<p class="questions-text">Suivez-vous le tour de France cette année ?</p>
-				<p class="text-custom">5 réponses  - Par Adrien Turcey - Il y a 2 jours</p>
-			</div>
-
-			<div class"questions">
-				<img class="questions-image" src="image/MMA.svg">
-				<p class="questions-text">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
-				<p class="text-custom">90 réponses  - Par Raphaël  - Il y a 5 jours</p>
-			</div>
+			{% for question in sportQuestions %}
+				<div class="questions">
+					<div class="category-label">{{ question.category.name }}</div>
+					<img class="questions-image" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+					<p class="questions-text">{{ question.title }}</p>
+					<p class="text-custom">
+						{{ question.Answer|length }}
+						réponses - Par
+						{{ question.user.firstName }}
+						{{ question.user.lastName }}
+						- 
+																																																																																																																								                Il y a
+						{{ (now.timestamp - question.publicationDate.timestamp) // 60 }}
+						minutes
+					</p>
+				</div>
+			{% endfor %}
 		</div>
 
 
 		<h1 class="section-title">Questions aléatoires</h1>
 
 		<div class="row">
-			<div class="col-lg-6 mb-4">
-				<div class="p-3">
-					<img class="img-fluid w-100 mb-3" src="image/eurocup.svg">
-					<p class="fs-3 fw-bold">Est-ce que la France est à la hauteur sur cette coupe d’Euro ?</p>
-					<p class="text-custom">3 réponses - Par Jeff Martins - Il y a 30 minutes</p>
+			{% if randomQuestions|length > 0 %}
+				{% set firstQuestion = randomQuestions[0] %}
+				<div class="col-lg-6 mb-4">
+					<div class="p-3">
+						<img class="img-fluid w-100 mb-3" src="image/{{ firstQuestion.image }}" alt="Image pour {{ firstQuestion.title }}">
+						<p class="fs-3 fw-bold">{{ firstQuestion.title }}</p>
+						<p class="text-custom">{{ firstQuestion.Answer|length }}
+							réponses - Par
+							{{ firstQuestion.user.firstName }}
+							{{ firstQuestion.user.lastName }}
+							- Il y a
+							{{ (now.timestamp - firstQuestion.publicationDate.timestamp) // 60 }}
+							minutes</p>
+					</div>
 				</div>
-			</div>
 
-			<div class="col-lg-6 d-flex flex-wrap">
-				<div class="col-6 p-2">
-					<div class="p-3 h-100">
-						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
-						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
-						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
-					</div>
+				<div class="col-lg-6 d-flex flex-wrap">
+					{% for question in randomQuestions[1:5] %}
+						<div class="col-6 p-2">
+							<div class="p-3 h-100">
+								<img class="img-fluid w-100 mb-2" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+								<p class="fs-5">{{ question.title }}</p>
+								<p class="text-custom">{{ question.Answer|length }}
+									réponses - Par
+									{{ question.user.firstName }}
+									{{ question.user.lastName }}
+									- Il y a
+									{{ (now.timestamp - question.publicationDate.timestamp) // 60 }}
+									minutes</p>
+							</div>
+						</div>
+					{% endfor %}
 				</div>
-				<div class="col-6 p-2">
-					<div class="p-3 h-100">
-						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
-						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
-						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
-					</div>
-				</div>
-				<div class="col-6 p-2">
-					<div class="secondary-random-questions p-3 h-100">
-						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
-						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
-						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
-					</div>
-				</div>
-				<div class="col-6 p-2">
-					<div class="p-3 h-100">
-						<img class="img-fluid w-100 mb-2" src="image/MMA.svg">
-						<p class="fs-5">MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?</p>
-						<p class="text-custom">90 réponses - Par Raphaël - Il y a 5 jours</p>
-					</div>
-				</div>
-			</div>
+			{% else %}
+				<p>Aucune question disponible pour le moment.</p>
+			{% endif %}
 		</div>
+
 
 	</div>
 
@@ -180,9 +154,19 @@
 
 
 		.questions {
-			display: flex;
-			flex-direction: column;
-			margin: 0 2%;
+			position: relative;
+		}
+		.category-label {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background-color: #AD0569;
+			color: white;
+			padding: 5px 10px;
+			border-radius: 5px;
+			font-size: 0.9rem;
+			font-weight: bold;
+			z-index: 1;
 		}
 		.questions-text {
 			font-size: 125%;
@@ -190,10 +174,11 @@
 			width: 24vw;
 			max-width: 100%;
 		}
+
 		.questions-image {
-			width: 25vw;
-			max-width: 100%;
+			width: 100%;
 			height: auto;
+			border-radius: 8px;
 		}
 
 

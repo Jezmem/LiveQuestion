@@ -16,6 +16,33 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
+    public function findByCategoryWithLimit(string $categoryName, int $limit): array
+    {
+        return $this->createQueryBuilder('q')
+            ->join('q.category', 'c')
+            ->where('c.name = :category')
+            ->setParameter('category', $categoryName)
+            ->orderBy('q.publicationDate', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findRandomQuestions(int $limit): array
+    {
+        $sql = 'SELECT * FROM question ORDER BY RAND() LIMIT :limit';
+        $stmt = $this->connection->prepare($sql);
+
+        // Bind the parameter
+        $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
+
+        // Execute the query
+        $resultSet = $stmt->executeQuery();
+
+        // Fetch results as associative arrays
+        return $resultSet->fetchAllAssociative();
+    }
+
     //    /**
     //     * @return Question[] Returns an array of Question objects
     //     */

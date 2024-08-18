@@ -16,6 +16,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    // Récupérer les top auteurs par nombre de questions publiées
+    public function findTopAuthors(int $limit)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u, COUNT(q.id) AS HIDDEN question_count')
+            ->leftJoin('u.question', 'q')
+            ->groupBy('u.id')
+            ->orderBy('question_count', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
