@@ -5,46 +5,107 @@
 
 {% block body %}
 	<div style="margin:3%;">
-		<div class="d-flex align-items-center">
-			<img src="image/{{ derniere_question.image }}" class="img-responsive">
-			<div class="last-question-element ms-5">
-				<div class="d-flex align-items-center fs-4">
-					<p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
-					<p class="mb-0 fw-bold px-2">.</p>
-					<p class="mb-0">
-						{% set minutes = (now|date('U') - derniere_question.publicationDate|date('U')) // 60 %}
-						{{ minutes }}
-						minutes
-					</p>
+		<div style="margin:3%;">
+			<div class="d-flex flex-wrap align-items-center">
+				<img src="image/{{ derniere_question.image }}" class="img-responsive last-question-image">
+				<div class="last-question-element ms-lg-5 mt-3 mt-lg-0">
+					<div class="d-flex align-items-center fs-4">
+						<p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
+						<p class="mb-0 fw-bold px-2">.</p>
+						<p class="mb-0">
+							{% set elapsedTime = now.timestamp - derniere_question.publicationDate.timestamp %}
+
+							{% set timeText = '' %}
+							{% set timeValue = 0 %}
+
+							{% if elapsedTime < 60 %}
+								{% set timeText = 'seconde' %}
+								{% set timeValue = elapsedTime %}
+							{% elseif elapsedTime < 3600 %}
+								{% set timeText = 'minute' %}
+								{% set timeValue = elapsedTime // 60 %}
+							{% elseif elapsedTime < 86400 %}
+								{% set timeText = 'heure' %}
+								{% set timeValue = elapsedTime // 3600 %}
+							{% elseif elapsedTime < 604800 %}
+								{% set timeText = 'jour' %}
+								{% set timeValue = elapsedTime // 86400 %}
+							{% elseif elapsedTime < 2592000 %}
+								{% set timeText = 'semaine' %}
+								{% set timeValue = elapsedTime // 604800 %}
+							{% elseif elapsedTime < 31536000 %}
+								{% set timeText = 'mois' %}
+								{% set timeValue = elapsedTime // 2592000 %}
+							{% else %}
+								{% set timeText = 'an' %}
+								{% set timeValue = elapsedTime // 31536000 %}
+							{% endif %}
+
+							{{ timeValue }}
+							{{ timeText }}
+							{% if timeValue > 1 %}s
+							{% endif %}
+						</p>
+					</div>
+					<p class="fs-2 fw-medium my-2">{{ derniere_question.title }}</p>
+					<p class="fs-4 text-custom">{{ derniere_question.Answer|length }}
+						réponses - par
+						{{ derniere_question.user.username }}</p>
 				</div>
-				<p class="fs-2 fw-medium my-2">{{ derniere_question.title }}</p>
-				<p class="fs-4 text-custom">{{ derniere_question.Answer|length }}
-					réponses - par
-					{{ derniere_question.user.username }}</p>
 			</div>
 		</div>
 
 
 		<h1 class="section-title">Dernières questions</h1>
 
-		<div class="d-flex justify-content-between my-3">
+		<div class="row">
 			{% for question in dernieres_questions %}
-				<div
-					class="questions position-relative">
-					<!-- Catégorie affichée en haut à droite de l'image -->
-					<div class="category-label">{{ question.category.name }}</div>
-					<img class="questions-image" src="image/{{ question.image }}">
-					<p class="questions-text">{{ question.title }}</p>
-					<p class="text-custom">
-						{{ question.Answer|length }}
-						réponses - Par
-						{{ question.user.username }}
-						-
-						{% set minutes = (now|date('U') - question.publicationDate|date('U')) // 60 %}
-						Il y a
-						{{ minutes }}
-						minutes
-					</p>
+				<div class="col-md-4 mb-4">
+					<div class="questions position-relative">
+						<div class="category-label position-absolute">{{ question.category.name }}</div>
+						<img class="questions-image img-fluid w-100" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+						<p class="questions-text mt-2">{{ question.title }}</p>
+						<p class="text-custom">
+							{{ question.Answer|length }}
+							réponses - Par
+							{{ question.user.username }}
+							-
+							{% set minutes = (now|date('U') - question.publicationDate|date('U')) // 60 %}
+							Il y a
+							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+
+							{% set timeText = '' %}
+							{% set timeValue = 0 %}
+
+							{% if elapsedTime < 60 %}
+								{% set timeText = 'seconde' %}
+								{% set timeValue = elapsedTime %}
+							{% elseif elapsedTime < 3600 %}
+								{% set timeText = 'minute' %}
+								{% set timeValue = elapsedTime // 60 %}
+							{% elseif elapsedTime < 86400 %}
+								{% set timeText = 'heure' %}
+								{% set timeValue = elapsedTime // 3600 %}
+							{% elseif elapsedTime < 604800 %}
+								{% set timeText = 'jour' %}
+								{% set timeValue = elapsedTime // 86400 %}
+							{% elseif elapsedTime < 2592000 %}
+								{% set timeText = 'semaine' %}
+								{% set timeValue = elapsedTime // 604800 %}
+							{% elseif elapsedTime < 31536000 %}
+								{% set timeText = 'mois' %}
+								{% set timeValue = elapsedTime // 2592000 %}
+							{% else %}
+								{% set timeText = 'an' %}
+								{% set timeValue = elapsedTime // 31536000 %}
+							{% endif %}
+
+							{{ timeValue }}
+							{{ timeText }}
+							{% if timeValue > 1 %}s
+							{% endif %}
+						</p>
+					</div>
 				</div>
 			{% endfor %}
 		</div>
@@ -52,7 +113,7 @@
 
 		<h1 class="section-title">Meilleurs auteurs</h1>
 
-		<div class="d-flex justify-content-between my-3">
+		<div class="d-flex justify-content-between flex-wrap my-3">
 			{% for auteur in meilleurs_auteurs %}
 				<div class="authors-ranking">
 					<p class="authors-ranking-number">{{ loop.index }}</p>
@@ -69,22 +130,54 @@
 
 		<h1 class="section-title">Dans la thématique “Sport”</h1>
 
-		<div class="d-flex justify-content-between" style="margin:2% 0;">
+		<div class="row" style="margin: 2% 0;">
 			{% for question in sportQuestions %}
-				<div class="questions">
-					<div class="category-label">{{ question.category.name }}</div>
-					<img class="questions-image" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
-					<p class="questions-text">{{ question.title }}</p>
-					<p class="text-custom">
-						{{ question.Answer|length }}
-						réponses - Par
-						{{ question.user.firstName }}
-						{{ question.user.lastName }}
-						- 
-																																																																																																																								                Il y a
-						{{ (now.timestamp - question.publicationDate.timestamp) // 60 }}
-						minutes
-					</p>
+				<div class="col-12 col-md-6 col-lg-4 mb-4">
+					<div class="questions position-relative">
+						<div class="category-label position-absolute">{{ question.category.name }}</div>
+						<img class="questions-image img-fluid" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+						<p class="questions-text mt-2">{{ question.title }}</p>
+						<p class="text-custom">
+							{{ question.Answer|length }}
+							réponses - Par
+							{{ question.user.firstName }}
+							{{ question.user.lastName }}
+							- Il y a
+							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+
+							{% set timeText = '' %}
+							{% set timeValue = 0 %}
+
+							{% if elapsedTime < 60 %}
+								{% set timeText = 'seconde' %}
+								{% set timeValue = elapsedTime %}
+							{% elseif elapsedTime < 3600 %}
+								{% set timeText = 'minute' %}
+								{% set timeValue = elapsedTime // 60 %}
+							{% elseif elapsedTime < 86400 %}
+								{% set timeText = 'heure' %}
+								{% set timeValue = elapsedTime // 3600 %}
+							{% elseif elapsedTime < 604800 %}
+								{% set timeText = 'jour' %}
+								{% set timeValue = elapsedTime // 86400 %}
+							{% elseif elapsedTime < 2592000 %}
+								{% set timeText = 'semaine' %}
+								{% set timeValue = elapsedTime // 604800 %}
+							{% elseif elapsedTime < 31536000 %}
+								{% set timeText = 'mois' %}
+								{% set timeValue = elapsedTime // 2592000 %}
+							{% else %}
+								{% set timeText = 'an' %}
+								{% set timeValue = elapsedTime // 31536000 %}
+							{% endif %}
+
+							{{ timeValue }}
+							{{ timeText }}
+							{% if timeValue > 1 %}s
+							{% endif %}
+
+						</p>
+					</div>
 				</div>
 			{% endfor %}
 		</div>
@@ -104,8 +197,39 @@
 							{{ firstQuestion.user.firstName }}
 							{{ firstQuestion.user.lastName }}
 							- Il y a
-							{{ (now.timestamp - firstQuestion.publicationDate.timestamp) // 60 }}
-							minutes</p>
+							{% set elapsedTime = now.timestamp - firstQuestion.publicationDate.timestamp %}
+
+							{% set timeText = '' %}
+							{% set timeValue = 0 %}
+
+							{% if elapsedTime < 60 %}
+								{% set timeText = 'seconde' %}
+								{% set timeValue = elapsedTime %}
+							{% elseif elapsedTime < 3600 %}
+								{% set timeText = 'minute' %}
+								{% set timeValue = elapsedTime // 60 %}
+							{% elseif elapsedTime < 86400 %}
+								{% set timeText = 'heure' %}
+								{% set timeValue = elapsedTime // 3600 %}
+							{% elseif elapsedTime < 604800 %}
+								{% set timeText = 'jour' %}
+								{% set timeValue = elapsedTime // 86400 %}
+							{% elseif elapsedTime < 2592000 %}
+								{% set timeText = 'semaine' %}
+								{% set timeValue = elapsedTime // 604800 %}
+							{% elseif elapsedTime < 31536000 %}
+								{% set timeText = 'mois' %}
+								{% set timeValue = elapsedTime // 2592000 %}
+							{% else %}
+								{% set timeText = 'an' %}
+								{% set timeValue = elapsedTime // 31536000 %}
+							{% endif %}
+
+							{{ timeValue }}
+							{{ timeText }}
+							{% if timeValue > 1 %}s
+							{% endif %}
+						</p>
 					</div>
 				</div>
 
@@ -120,8 +244,39 @@
 									{{ question.user.firstName }}
 									{{ question.user.lastName }}
 									- Il y a
-									{{ (now.timestamp - question.publicationDate.timestamp) // 60 }}
-									minutes</p>
+									{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+
+									{% set timeText = '' %}
+									{% set timeValue = 0 %}
+
+									{% if elapsedTime < 60 %}
+										{% set timeText = 'seconde' %}
+										{% set timeValue = elapsedTime %}
+									{% elseif elapsedTime < 3600 %}
+										{% set timeText = 'minute' %}
+										{% set timeValue = elapsedTime // 60 %}
+									{% elseif elapsedTime < 86400 %}
+										{% set timeText = 'heure' %}
+										{% set timeValue = elapsedTime // 3600 %}
+									{% elseif elapsedTime < 604800 %}
+										{% set timeText = 'jour' %}
+										{% set timeValue = elapsedTime // 86400 %}
+									{% elseif elapsedTime < 2592000 %}
+										{% set timeText = 'semaine' %}
+										{% set timeValue = elapsedTime // 604800 %}
+									{% elseif elapsedTime < 31536000 %}
+										{% set timeText = 'mois' %}
+										{% set timeValue = elapsedTime // 2592000 %}
+									{% else %}
+										{% set timeText = 'an' %}
+										{% set timeValue = elapsedTime // 31536000 %}
+									{% endif %}
+
+									{{ timeValue }}
+									{{ timeText }}
+									{% if timeValue > 1 %}s
+									{% endif %}
+								</p>
 							</div>
 						</div>
 					{% endfor %}
@@ -136,6 +291,25 @@
 
 
 	<style>
+
+		.last-question-image {
+			width: 100%;
+			max-width: 400px;
+			height: auto;
+			flex: 0 0 100%;
+		}
+
+		@media(min-width: 768px) {
+			.last-question-image {
+				flex: 0 0 40%;
+			}
+		}
+
+		.last-question-element {
+			flex: 1;
+		}
+
+
 		.section-title {
 			margin-top: 3%;
 			font-size: 300%;
@@ -153,9 +327,6 @@
 		}
 
 
-		.questions {
-			position: relative;
-		}
 		.category-label {
 			position: absolute;
 			top: 10px;
@@ -165,20 +336,43 @@
 			padding: 5px 10px;
 			border-radius: 5px;
 			font-size: 0.9rem;
-			font-weight: bold;
 			z-index: 1;
-		}
-		.questions-text {
-			font-size: 125%;
-			margin: 2% 0;
-			width: 24vw;
-			max-width: 100%;
 		}
 
 		.questions-image {
+			border-radius: 5px;
 			width: 100%;
 			height: auto;
-			border-radius: 8px;
+		}
+
+		.questions {
+			background-color: #f8f9fa;
+			padding: 15px;
+			border-radius: 10px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		@media(max-width: 768px) {
+			.category-label {
+				font-size: 0.8rem;
+				padding: 3px 8px;
+			}
+
+			.questions-text,
+			.text-custom {
+				font-size: 0.9rem;
+			}
+		}
+
+		@media(max-width: 576px) {
+			.questions {
+				padding: 10px;
+			}
+
+			.questions-text,
+			.text-custom {
+				font-size: 0.8rem;
+			}
 		}
 
 

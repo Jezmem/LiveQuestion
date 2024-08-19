@@ -19,6 +19,7 @@ class QuestionController extends AbstractController
     {
         return $this->render('question/index.html.twig', [
             'questions' => $questionRepository->findAll(),
+            'now' => new \DateTime(),  // Ajouter la date actuelle
         ]);
     }
 
@@ -71,7 +72,7 @@ class QuestionController extends AbstractController
     #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
     public function delete(Request $request, Question $question, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$question->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $question->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($question);
             $entityManager->flush();
         }

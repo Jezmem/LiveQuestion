@@ -1,39 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Question index{% endblock %}
+{% block title %}Les questions
+{% endblock %}
 
 {% block body %}
-    <h1>Question index</h1>
+	<h1>Les questions</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>PublicationDate</th>
-                <th>Image</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for question in questions %}
-            <tr>
-                <td>{{ question.id }}</td>
-                <td>{{ question.title }}</td>
-                <td>{{ question.publicationDate ? question.publicationDate|date('Y-m-d') : '' }}</td>
-                <td>{{ question.image }}</td>
-                <td>
-                    <a href="{{ path('app_question_show', {'id': question.id}) }}">show</a>
-                    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	{% for question in questions %}
+		<div style="margin:3%;">
+			<div class="d-flex align-items-center">
+				<img src="../image/{{ question.image }}" class="img-responsive last-question-image">
+				<div class="last-question-element ms-lg-5 mt-3 mt-lg-0">
+					<div class="d-flex align-items-center fs-4">
+						<p class="mb-0 fw-bold">{{ question.Category.name }}</p>
+						<p class="mb-0 fw-bold px-2">.</p>
+						<p class="mb-0">
+							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
 
-    <a href="{{ path('app_question_new') }}">Create new</a>
+							{% set timeText = '' %}
+							{% set timeValue = 0 %}
+
+							{% if elapsedTime < 60 %}
+								{% set timeText = 'seconde' %}
+								{% set timeValue = elapsedTime %}
+							{% elseif elapsedTime < 3600 %}
+								{% set timeText = 'minute' %}
+								{% set timeValue = elapsedTime // 60 %}
+							{% elseif elapsedTime < 86400 %}
+								{% set timeText = 'heure' %}
+								{% set timeValue = elapsedTime // 3600 %}
+							{% elseif elapsedTime < 604800 %}
+								{% set timeText = 'jour' %}
+								{% set timeValue = elapsedTime // 86400 %}
+							{% elseif elapsedTime < 2592000 %}
+								{% set timeText = 'semaine' %}
+								{% set timeValue = elapsedTime // 604800 %}
+							{% elseif elapsedTime < 31536000 %}
+								{% set timeText = 'mois' %}
+								{% set timeValue = elapsedTime // 2592000 %}
+							{% else %}
+								{% set timeText = 'an' %}
+								{% set timeValue = elapsedTime // 31536000 %}
+							{% endif %}
+
+							{{ timeValue }}
+							{{ timeText }}
+							{% if timeValue > 1 %}s
+							{% endif %}
+						</p>
+					</div>
+					<p class="fs-2 fw-medium my-2">{{ question.title }}</p>
+					<p class="fs-4 text-custom">{{ question.Answer|length }}
+						réponses - par
+						{{ question.user.username }}</p>
+				</div>
+			</div>
+		</div>
+		<pcolspan="5">
+			{% else %}no records found</p>
+	{% endfor %}
 {% endblock %}

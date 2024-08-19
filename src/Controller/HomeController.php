@@ -13,6 +13,7 @@ use App\Repository\QuestionRepository;
 
 class HomeController extends AbstractController
 {
+
     #[Route('/', name: 'accueil')]
     public function accueil(EntityManagerInterface $entityManager, QuestionRepository $questionRepository, UserRepository $userRepository): Response
     {
@@ -37,6 +38,7 @@ class HomeController extends AbstractController
 
         // Prendre un sous-ensemble de 5 questions
         $randomQuestions = array_slice($allQuestions, 0, 5);
+
 
         return $this->render('home/index.html.twig', [
             'derniere_question' => $derniereQuestion,
