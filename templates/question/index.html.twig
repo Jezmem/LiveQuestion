@@ -1,62 +1,120 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les questions
-{% endblock %}
+{% block title %}Les questions{% endblock %}
 
 {% block body %}
-	<h1>Les questions</h1>
+<div class="container">
+    <h1 class="my-4">Les questions</h1>
 
-	{% for question in questions %}
-		<div style="margin:3%;">
-			<div class="d-flex align-items-center">
-				<img src="../image/{{ question.image }}" class="img-responsive last-question-image">
-				<div class="last-question-element ms-lg-5 mt-3 mt-lg-0">
-					<div class="d-flex align-items-center fs-4">
-						<p class="mb-0 fw-bold">{{ question.Category.name }}</p>
-						<p class="mb-0 fw-bold px-2">.</p>
-						<p class="mb-0">
-							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+    <!-- Formulaire de recherche -->
+    <form method="get" action="{{ path('app_question_index') }}" class="mb-4">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <input type="text" name="title" class="form-control" placeholder="Recherche par titre" value="{{ app.request.get('title') }}">
+            </div>
+            <div class="col-md-4 mb-2">
+                <select name="author" class="form-control">
+                    <option value="">Tous les auteurs</option>
+                    {% for author in authors %}
+                        <option value="{{ author.id }}" {% if app.request.get('author') == author.id %}selected{% endif %}>
+                            {{ author.firstName }} {{ author.lastName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-2">
+                <select name="category" class="form-control">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if app.request.get('category') == category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
 
-							{% set timeText = '' %}
-							{% set timeValue = 0 %}
+    {% for question in questions %}
+        <!-- Affichage des questions (ton code existant) -->
+        <div class="question-item mb-5">
+            <div class="row">
+                <!-- Image Section -->
+                <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
+                    <img src="../image/{{ question.image }}" class="img-fluid w-100 last-question-image" alt="{{ question.title }}">
+                </div>
 
-							{% if elapsedTime < 60 %}
-								{% set timeText = 'seconde' %}
-								{% set timeValue = elapsedTime %}
-							{% elseif elapsedTime < 3600 %}
-								{% set timeText = 'minute' %}
-								{% set timeValue = elapsedTime // 60 %}
-							{% elseif elapsedTime < 86400 %}
-								{% set timeText = 'heure' %}
-								{% set timeValue = elapsedTime // 3600 %}
-							{% elseif elapsedTime < 604800 %}
-								{% set timeText = 'jour' %}
-								{% set timeValue = elapsedTime // 86400 %}
-							{% elseif elapsedTime < 2592000 %}
-								{% set timeText = 'semaine' %}
-								{% set timeValue = elapsedTime // 604800 %}
-							{% elseif elapsedTime < 31536000 %}
-								{% set timeText = 'mois' %}
-								{% set timeValue = elapsedTime // 2592000 %}
-							{% else %}
-								{% set timeText = 'an' %}
-								{% set timeValue = elapsedTime // 31536000 %}
-							{% endif %}
+                <!-- Content Section -->
+                <div class="col-lg-8 col-md-7">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="bg-custom-category">{{ question.Category.name }}</span>
+                        <span class="mx-2">•</span>
+                        <span>
+                            {% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+                            {% set timeText = '' %}
+                            {% set timeValue = 0 %}
+                            {% if elapsedTime < 60 %}
+                                {% set timeText = 'seconde' %}
+                                {% set timeValue = elapsedTime %}
+                            {% elseif elapsedTime < 3600 %}
+                                {% set timeText = 'minute' %}
+                                {% set timeValue = elapsedTime // 60 %}
+                            {% elseif elapsedTime < 86400 %}
+                                {% set timeText = 'heure' %}
+                                {% set timeValue = elapsedTime // 3600 %}
+                            {% elseif elapsedTime < 604800 %}
+                                {% set timeText = 'jour' %}
+                                {% set timeValue = elapsedTime // 86400 %}
+                            {% elseif elapsedTime < 2592000 %}
+                                {% set timeText = 'semaine' %}
+                                {% set timeValue = elapsedTime // 604800 %}
+                            {% elseif elapsedTime < 31536000 %}
+                                {% set timeText = 'mois' %}
+                                {% set timeValue = elapsedTime // 2592000 %}
+                            {% else %}
+                                {% set timeText = 'an' %}
+                                {% set timeValue = elapsedTime // 31536000 %}
+                            {% endif %}
+                            {{ timeValue }} {{ timeText }}{% if timeValue > 1 %}s{% endif %}
+                        </span>
+                    </div>
+                    <h2 class="fs-4 fw-bold">{{ question.title }}</h2>
+                    <p class="text-muted">
+                        {{ question.Answer|length }} réponses - par {{ question.user.username }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>Aucune question disponible.</p>
+    {% endfor %}
 
-							{{ timeValue }}
-							{{ timeText }}
-							{% if timeValue > 1 %}s
-							{% endif %}
-						</p>
-					</div>
-					<p class="fs-2 fw-medium my-2">{{ question.title }}</p>
-					<p class="fs-4 text-custom">{{ question.Answer|length }}
-						réponses - par
-						{{ question.user.username }}</p>
-				</div>
-			</div>
-		</div>
-		<pcolspan="5">
-			{% else %}no records found</p>
-	{% endfor %}
+    {# Pagination #}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if currentPage > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path('app_question_index', {'page': currentPage - 1}) }}"><</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"><</a>
+            </li>
+            {% endif %}
+            {% for page in 1..totalPages %}
+            <li class="page-item {% if page == currentPage %}active{% endif %}">
+                <a class="page-link" href="{{ path('app_question_index', {'page': page}) }}">{{ page }}</a>
+            </li>
+            {% endfor %}
+            {% if currentPage < totalPages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path('app_question_index', {'page': currentPage + 1}) }}">></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">></a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
 {% endblock %}

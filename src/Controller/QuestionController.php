@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\Category;
+use App\Entity\User;
 use App\Form\QuestionType;
+use App\Repository\CategoryRepository;
 use App\Repository\QuestionRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +19,62 @@ use Symfony\Component\Routing\Attribute\Route;
 class QuestionController extends AbstractController
 {
     #[Route('/', name: 'app_question_index', methods: ['GET'])]
-    public function index(QuestionRepository $questionRepository): Response
+    public function index(QuestionRepository $questionRepository, CategoryRepository $categoryRepository, UserRepository $userRepository, Request $request): Response
     {
+        // Pagination
+        $page = $request->query->getInt('page', 1);
+        $limit = 5;
+        $offset = ($page - 1) * $limit;
+        // Récupérer le nombre total d'exercices
+        $totalQuestions = $questionRepository->count([]);
+        // Récupérer les exercices pour la page actuelle
+        $questions = $questionRepository->findBy([], ['id' => 'DESC'], $limit, $offset);
+        // Calculer le nombre total de pages
+        $totalPages = ceil($totalQuestions / $limit);
+
+
+        // Filtre
+        // Récupérer les paramètres de recherche
+        $title = $request->query->get('title');
+        $author = $request->query->get('author');
+        $category = $request->query->get('category');
+
+        // Construire une requête personnalisée
+        $queryBuilder = $questionRepository->createQueryBuilder('q')
+            ->leftJoin('q.user', 'u')
+            ->leftJoin('q.category', 'c')
+            ->addSelect('u', 'c');
+
+        if ($title) {
+            $queryBuilder->andWhere('q.title LIKE :title')
+                ->setParameter('title', '%' . $title . '%');
+        }
+
+        if ($author) {
+            $queryBuilder->andWhere('u.id = :author')
+                ->setParameter('author', $author);
+        }
+
+        if ($category) {
+            $queryBuilder->andWhere('c.id = :category')
+                ->setParameter('category', $category);
+        }
+
+        $questions = $queryBuilder->getQuery()->getResult();
+
+        // Récupérer toutes les catégories pour le formulaire
+        $categories = $categoryRepository->findAll();
+
+        // Récupérer tous les auteurs (utilisateurs) pour le formulaire
+        $authors = $userRepository->findAll();
+
         return $this->render('question/index.html.twig', [
-            'questions' => $questionRepository->findAll(),
+            'questions' => $questions,
+            'categories' => $categories,
+            'authors' => $authors,
+            'questions' => $questions,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
             'now' => new \DateTime(),  // Ajouter la date actuelle
         ]);
     }
