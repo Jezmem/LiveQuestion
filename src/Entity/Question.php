@@ -33,11 +33,14 @@ class Question
 
     #[ORM\ManyToOne(inversedBy: 'question')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -115,18 +118,6 @@ class Question
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -135,6 +126,18 @@ class Question
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getUser(): ?user
+    {
+        return $this->user;
+    }
+
+    public function setUser(?user $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

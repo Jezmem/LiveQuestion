@@ -14,7 +14,7 @@ use App\Repository\QuestionRepository;
 class HomeController extends AbstractController
 {
 
-    #[Route('/', name: 'accueil')]
+    #[Route('/home', name: 'app_home_index')]
     public function accueil(EntityManagerInterface $entityManager, QuestionRepository $questionRepository, UserRepository $userRepository): Response
     {
         // Récupérer la dernière question (ordre décroissant par date)

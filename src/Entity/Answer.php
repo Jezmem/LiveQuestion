@@ -20,7 +20,7 @@ class Answer
     #[ORM\ManyToOne(inversedBy: 'answer')]
     private ?Question $question = null;
 
-    #[ORM\ManyToOne(inversedBy: 'answers')]
+    #[ORM\ManyToOne(inversedBy: 'answer')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -64,4 +64,5 @@ class Answer
 
         return $this;
     }
+
 }

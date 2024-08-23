@@ -6,24 +6,35 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-class User
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $username = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    /**
+     * @var list<string> The user roles
+     */
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $username = null;
 
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
@@ -35,35 +46,23 @@ class User
      * @var Collection<int, Question>
      */
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $question;
+    private Collection $questions;
 
     /**
-     * @var Collection<int, Answer>
+     * @var Collection<int, answer>
      */
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $answers;
+    private Collection $answer;
 
     public function __construct()
     {
-        $this->question = new ArrayCollection();
-        $this->answers = new ArrayCollection();
+        $this->questions = new ArrayCollection();
+        $this->answer = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): static
-    {
-        $this->username = $username;
-
-        return $this;
     }
 
     public function getEmail(): ?string
@@ -78,7 +77,44 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     *
+     * @return list<string>
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -86,6 +122,27 @@ class User
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }
@@ -119,13 +176,13 @@ class User
      */
     public function getQuestion(): Collection
     {
-        return $this->question;
+        return $this->questions;
     }
 
     public function addQuestion(Question $question): static
     {
-        if (!$this->question->contains($question)) {
-            $this->question->add($question);
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
             $question->setUser($this);
         }
 
@@ -134,7 +191,7 @@ class User
 
     public function removeQuestion(Question $question): static
     {
-        if ($this->question->removeElement($question)) {
+        if ($this->questions->removeElement($question)) {
             // set the owning side to null (unless already changed)
             if ($question->getUser() === $this) {
                 $question->setUser(null);
@@ -145,26 +202,26 @@ class User
     }
 
     /**
-     * @return Collection<int, Answer>
+     * @return Collection<int, answer>
      */
-    public function getAnswers(): Collection
+    public function getAnswer(): Collection
     {
-        return $this->answers;
+        return $this->answer;
     }
 
-    public function addAnswer(Answer $answer): static
+    public function addAnswer(answer $answer): static
     {
-        if (!$this->answers->contains($answer)) {
-            $this->answers->add($answer);
+        if (!$this->answer->contains($answer)) {
+            $this->answer->add($answer);
             $answer->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAnswer(Answer $answer): static
+    public function removeAnswer(answer $answer): static
     {
-        if ($this->answers->removeElement($answer)) {
+        if ($this->answer->removeElement($answer)) {
             // set the owning side to null (unless already changed)
             if ($answer->getUser() === $this) {
                 $answer->setUser(null);

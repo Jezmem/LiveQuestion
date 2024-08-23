@@ -20,13 +20,13 @@ class QuestionType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('image')
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+            // ->add('user', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'id',
+            // ])
             ->add('category', EntityType::class, [
                 'class' => category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }
