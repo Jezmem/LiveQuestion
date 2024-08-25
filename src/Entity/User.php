@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Question>
      */
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $questions;
+    private Collection $question;
 
     /**
      * @var Collection<int, answer>
@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->question = new ArrayCollection();
         $this->answer = new ArrayCollection();
     }
 
@@ -176,13 +176,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getQuestion(): Collection
     {
-        return $this->questions;
+        return $this->question;
     }
 
     public function addQuestion(Question $question): static
     {
-        if (!$this->questions->contains($question)) {
-            $this->questions->add($question);
+        if (!$this->question->contains($question)) {
+            $this->question->add($question);
             $question->setUser($this);
         }
 
@@ -191,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeQuestion(Question $question): static
     {
-        if ($this->questions->removeElement($question)) {
+        if ($this->question->removeElement($question)) {
             // set the owning side to null (unless already changed)
             if ($question->getUser() === $this) {
                 $question->setUser(null);
