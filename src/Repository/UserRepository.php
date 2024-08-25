@@ -37,7 +37,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         {
             return $this->createQueryBuilder('u')
                 ->select('u, COUNT(q.id) AS HIDDEN question_count')
-                ->leftJoin('u.questions', 'q')
+                ->leftJoin('u.question', 'q')
                 ->groupBy('u.id')
                 ->orderBy('question_count', 'DESC')
                 ->setMaxResults($limit)

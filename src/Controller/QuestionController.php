@@ -62,6 +62,7 @@ class QuestionController extends AbstractController
 
         $questions = $queryBuilder->getQuery()->getResult();
 
+
         // Récupérer toutes les catégories pour le formulaire
         $categories = $categoryRepository->findAll();
 

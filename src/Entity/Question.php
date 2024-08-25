@@ -38,7 +38,7 @@ class Question
     private ?Category $category = null;
 
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\ManyToOne(inversedBy: 'question')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
