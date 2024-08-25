@@ -7,7 +7,7 @@
 	<div style="margin:3%;">
 		<div style="margin:3%;">
 			<div class="d-flex flex-wrap align-items-center">
-				<img src="image/{{ derniere_question.image }}" class="img-responsive last-question-image">
+				<img src="uploads/images/{{ derniere_question.image }}" class="img-responsive last-question-image">
 				<div class="last-question-element ms-lg-5 mt-3 mt-lg-0">
 					<div class="d-flex align-items-center fs-4">
 						<p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
@@ -63,7 +63,7 @@
 				<div class="col-md-4 mb-4">
 					<div class="questions position-relative">
 						<div class="category-label position-absolute">{{ question.category.name }}</div>
-						<img class="questions-image img-fluid w-100" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+						<img class="questions-image img-fluid w-100" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
 						<p class="questions-text mt-2">{{ question.title }}</p>
 						<p class="text-custom">
 							{{ question.Answer|length }}
@@ -135,7 +135,7 @@
 				<div class="col-12 col-md-6 col-lg-4 mb-4">
 					<div class="questions position-relative">
 						<div class="category-label position-absolute">{{ question.category.name }}</div>
-						<img class="questions-image img-fluid" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+						<img class="questions-image img-fluid" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
 						<p class="questions-text mt-2">{{ question.title }}</p>
 						<p class="text-custom">
 							{{ question.Answer|length }}
@@ -190,7 +190,7 @@
 				{% set firstQuestion = randomQuestions[0] %}
 				<div class="col-lg-6 mb-4">
 					<div class="p-3">
-						<img class="img-fluid w-100 mb-3" src="image/{{ firstQuestion.image }}" alt="Image pour {{ firstQuestion.title }}">
+						<img class="img-fluid w-100 mb-3" src="uploads/images/{{ firstQuestion.image }}" alt="Image pour {{ firstQuestion.title }}">
 						<p class="fs-3 fw-bold">{{ firstQuestion.title }}</p>
 						<p class="text-custom">{{ firstQuestion.Answer|length }}
 							réponses - Par
@@ -237,7 +237,7 @@
 					{% for question in randomQuestions[1:5] %}
 						<div class="col-6 p-2">
 							<div class="p-3 h-100">
-								<img class="img-fluid w-100 mb-2" src="image/{{ question.image }}" alt="Image pour {{ question.title }}">
+								<img class="img-fluid w-100 mb-2" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
 								<p class="fs-5">{{ question.title }}</p>
 								<p class="text-custom">{{ question.Answer|length }}
 									réponses - Par
