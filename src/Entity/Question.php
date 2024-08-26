@@ -19,24 +19,18 @@ class Question
     #[ORM\Column(type: Types::TEXT)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $publicationDate = null;
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    /**
-     * @var Collection<int, Answer>
-     */
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question')]
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Answer::class)]
     private Collection $answer;
 
     #[ORM\ManyToOne(inversedBy: 'question')]
     #[ORM\JoinColumn(nullable: false)]
-
-    #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
-
 
     #[ORM\ManyToOne(inversedBy: 'question')]
     #[ORM\JoinColumn(nullable: false)]
@@ -44,6 +38,7 @@ class Question
 
     public function __construct()
     {
+        $this->publicationDate = new \DateTime(); 
         $this->answer = new ArrayCollection();
     }
 
@@ -69,7 +64,7 @@ class Question
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(\DateTimeInterface $publicationDate): static
+    public function setPublicationDate(\DateTimeInterface $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
 
@@ -88,9 +83,6 @@ class Question
         return $this;
     }
 
-    /**
-     * @return Collection<int, Answer>
-     */
     public function getAnswer(): Collection
     {
         return $this->answer;
@@ -109,7 +101,6 @@ class Question
     public function removeAnswer(Answer $answer): static
     {
         if ($this->answer->removeElement($answer)) {
-            // set the owning side to null (unless already changed)
             if ($answer->getQuestion() === $this) {
                 $answer->setQuestion(null);
             }
@@ -130,12 +121,12 @@ class Question
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

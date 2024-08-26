@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form method="post" class="mt-5 p-4 border rounded bg-light shadow">
+        <h1 class="h3 mb-3 font-weight-normal text-center" style="color: #AD0569">Inscription</h1>
+
+        {{ form_start(registrationForm) }}
+
+        <div class="form-group">
+            {{ form_label(registrationForm.firstname) }}
+            {{ form_widget(registrationForm.firstname, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.lastname) }}
+            {{ form_widget(registrationForm.lastname, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.username) }}
+            {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.email) }}
+            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.plainPassword.first) }}
+            {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(registrationForm.plainPassword.second) }}
+            {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" style="background-color: #AD0569; border-color: #AD0569;">
+            S'inscrire
+        </button>
+
+        <a class="btn btn-danger" href="{{ path('app_login') }}">Retour</a>
+
+        {{ form_end(registrationForm) }}
+    </form>
+
+</div>
+{% endblock %}

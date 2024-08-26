@@ -17,16 +17,22 @@
 		{% endblock %}
 	</head>
 	<body>
-		{% include "navbar.html.twig" %}
-		{% block body %}{% endblock %}
-		<footer>
-			{% include "footer.html.twig" %}
-		</footer>
+		<main>
+			{% include "navbar.html.twig" %}
+			{% block body %}{% endblock %}
+			<footer>
+				{% include "footer.html.twig" %}
+			</footer>
+		</main>
 	</body>
 </html>
 
 <style>
 	body {
 		background-color: #FFFF;
+	}
+	footer {
+		position: relative;
+		bottom: 0;
 	}
 </style>

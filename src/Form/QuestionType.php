@@ -2,13 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\category;
+use App\Entity\Category;
 use App\Entity\Question;
-use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class QuestionType extends AbstractType
 {
@@ -16,19 +16,15 @@ class QuestionType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('publicationDate', null, [
-                'widget' => 'single_text',
+            ->add('image', FileType::class, [
+                'label' => 'Image (JPG, PNG, etc.)',
+                'mapped' => false, // Ce champ ne correspond pas directement à une propriété de l'entité
+                'required' => false, // Facultatif, si l'image n'est pas obligatoire
             ])
-            ->add('image')
-            // ->add('user', EntityType::class, [
-            //     'class' => User::class,
-            //     'choice_label' => 'id',
-            // ])
             ->add('category', EntityType::class, [
-                'class' => category::class,
+                'class' => Category::class,
                 'choice_label' => 'name',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

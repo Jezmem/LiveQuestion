@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <div class="account-container">
+        <h1 class="account-title">Mon compte</h1>
+
+        <div class="account-section">
+            <h2 class="section-title">Mes informations</h2>
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.firstName) }}
+                    {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.lastName) }}
+                    {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="questions-section">
+            <h2 class="section-title">Mes questions publiées</h2>
+            <ul class="questions-list">
+                {% for question in userQuestions %}
+                    <li class="question-item">
+                        <a href="{{ path('app_question_show', {id: question.id}) }}">{{ question.title }}</a> 
+                        <span class="text-muted">- Publiée le {{ question.publicationDate|date('d/m/Y') }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        .account-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .account-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #AD0569;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #AD0569;
+            border-color: #AD0569;
+        }
+
+        .btn-primary:hover {
+            background-color: #8c0452;
+            border-color: #8c0452;
+        }
+
+        .questions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .question-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .question-item a {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .text-muted {
+            color: #757575;
+            font-size: 0.9em;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .account-container {
+                padding: 10px;
+            }
+
+            .account-title {
+                font-size: 1.8em;
+            }
+
+            .section-title {
+                font-size: 1.3em;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+
+            .question-item {
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .account-container {
+                padding: 5px;
+            }
+
+            .account-title {
+                font-size: 1.5em;
+            }
+
+            .section-title {
+                font-size: 1.2em;
+            }
+
+            .btn-primary {
+                width: 100%;
+                font-size: 1.1em;
+            }
+
+            .question-item {
+                font-size: 0.9em;
+                padding: 8px 0;
+            }
+        }
+    </style>
+{% endblock %}
