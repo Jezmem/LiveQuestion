@@ -41,7 +41,9 @@ security:
     access_control:
         # Empêche l'accès à toutes les routes sauf les pages de connexion et de déconnexion
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/home, roles: ROLE_USER }
+        - { path: ^/mes-questions, roles: ROLE_USER }
+        - { path: ^/question/edit, roles: ROLE_USER }
+        - { path: ^/question/delete, roles: ROLE_USER }
 
 when@test:
     security:

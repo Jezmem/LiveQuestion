@@ -18,53 +18,38 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[Route('/question')]
 class QuestionController extends AbstractController
 {
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     #[Route('/', name: 'app_question_index', methods: ['GET'])]
     public function index(QuestionRepository $questionRepository, CategoryRepository $categoryRepository, UserRepository $userRepository, Request $request): Response
     {
+        // Récupérer l'utilisateur connecté
+        $user = $this->tokenStorage->getToken()->getUser();
+
         // Pagination
         $page = $request->query->getInt('page', 1);
         $limit = 5;
         $offset = ($page - 1) * $limit;
-        // Récupérer le nombre total d'exercices
-        $totalQuestions = $questionRepository->count([]);
-        // Récupérer les exercices pour la page actuelle
-        $questions = $questionRepository->findBy([], ['id' => 'DESC'], $limit, $offset);
+
+        // Récupérer les questions de l'utilisateur connecté
+        $questions = $questionRepository->findBy(['user' => $user], ['id' => 'DESC'], $limit, $offset);
+
+        // Calculer le nombre total de questions de l'utilisateur
+        $totalQuestions = count($questions);
+
         // Calculer le nombre total de pages
         $totalPages = ceil($totalQuestions / $limit);
-
-
-        // Filtre
-        // Récupérer les paramètres de recherche
-        $title = $request->query->get('title');
-        $author = $request->query->get('author');
-        $category = $request->query->get('category');
-
-        // Construire une requête personnalisée
-        $queryBuilder = $questionRepository->createQueryBuilder('q')
-            ->leftJoin('q.user', 'u')
-            ->leftJoin('q.category', 'c')
-            ->addSelect('u', 'c');
-
-        if ($title) {
-            $queryBuilder->andWhere('q.title LIKE :title')
-                ->setParameter('title', '%' . $title . '%');
-        }
-
-        if ($author) {
-            $queryBuilder->andWhere('u.id = :author')
-                ->setParameter('author', $author);
-        }
-
-        if ($category) {
-            $queryBuilder->andWhere('c.id = :category')
-                ->setParameter('category', $category);
-        }
-
-        $questions = $queryBuilder->getQuery()->getResult();
 
         // Récupérer toutes les catégories pour le formulaire
         $categories = $categoryRepository->findAll();
@@ -76,17 +61,14 @@ class QuestionController extends AbstractController
             'questions' => $questions,
             'categories' => $categories,
             'authors' => $authors,
-            'questions' => $questions,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'now' => new \DateTime(),  // Ajouter la date actuelle
         ]);
     }
 
-
-
-    #[Route('/question/new', name: 'app_question_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, TokenStorageInterface $tokenStorage): Response
+    #[Route('/new', name: 'app_question_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $question = new Question();
 
@@ -95,7 +77,7 @@ class QuestionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Récupérer l'utilisateur connecté
-            $user = $tokenStorage->getToken()->getUser();
+            $user = $this->tokenStorage->getToken()->getUser();
             $question->setUser($user);
 
             // Gestion de l'image uploadée
@@ -136,42 +118,51 @@ class QuestionController extends AbstractController
         ]);
     }
 
-
-
-    #[Route('/{id}', name: 'app_question_show', methods: ['GET'])]
-    public function show(Question $question): Response
+    #[Route('/myquestions', name: 'app_my_questions')]
+    public function myQuestions(QuestionRepository $questionRepository, UserInterface $user): Response
     {
-        return $this->render('question/show.html.twig', [
-            'question' => $question,
+        // Récupérer les questions de l'utilisateur connecté
+        $questions = $questionRepository->findBy(['user' => $user]);
+
+        return $this->render('question/my-questions.html.twig', [
+            'questions' => $questions,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_question_edit', methods: ['GET', 'POST'])]
+
+    #[Route('/edit/{id}', name: 'app_question_edit')]
     public function edit(Request $request, Question $question, EntityManagerInterface $entityManager): Response
     {
+        // Vérifier que l'utilisateur connecté est l'auteur de la question
+        if ($question->getUser() !== $this->tokenStorage->getToken()->getUser()) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette question.');
+        }
+
         $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_question_index');
         }
 
         return $this->render('question/edit.html.twig', [
             'question' => $question,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
-    public function delete(Request $request, Question $question, EntityManagerInterface $entityManager): Response
+    #[Route('/delete/{id}', name: 'app_question_delete')]
+    public function delete(Question $question, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $question->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($question);
-            $entityManager->flush();
+        // Vérifier que l'utilisateur connecté est l'auteur de la question
+        if ($question->getUser() !== $this->tokenStorage->getToken()->getUser()) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette question.');
         }
 
-        return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($question);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_question_index');
     }
 }
