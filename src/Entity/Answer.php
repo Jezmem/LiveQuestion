@@ -15,7 +15,7 @@ class Answer
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $answerText = null;
+    private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'answer')]
     private ?Question $question = null;
@@ -24,19 +24,22 @@ class Answer
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAnswerText(): ?string
+    public function getContent(): ?string
     {
-        return $this->answerText;
+        return $this->content;
     }
 
-    public function setAnswerText(string $answerText): static
+    public function setContent(string $content): static
     {
-        $this->answerText = $answerText;
+        $this->content = $content;
 
         return $this;
     }
@@ -61,6 +64,18 @@ class Answer
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

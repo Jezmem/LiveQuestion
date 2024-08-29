@@ -1,6 +1,18 @@
 {{ form_start(form) }}
-{{ form_row(form.title) }}
-{{ form_row(form.image) }}
-{{ form_row(form.category) }}
-<button class="btn btn-primary">Créer</button>
+    <div class="form-group">
+        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group mt-3">
+        {{ form_label(form.image, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group mt-3">
+        {{ form_label(form.category, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <button class="btn btn-primary mt-4">{{ button_label|default('Créer') }}</button>
 {{ form_end(form) }}

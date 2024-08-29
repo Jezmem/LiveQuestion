@@ -1,13 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Question{% endblock %}
+{% block title %}Modifier la Question{% endblock %}
 
 {% block body %}
-    <h1>Edit Question</h1>
+    <div class="container mt-5">
+        <h1 class="text-center" style="color: #AD0569; margin-bottom: 30px;">Modifier la Question</h1>
 
-    {{ include('question/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="card p-4 shadow-sm">
+            {{ include('question/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
 
-    <a href="{{ path('app_question_index') }}">back to list</a>
+        <div class="mt-3 d-flex justify-content-between">
+            <a href="{{ path('app_question_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            {{ include('question/_delete_form.html.twig') }}
+        </div>
+    </div>
 
-    {{ include('question/_delete_form.html.twig') }}
+    <style>
+        .card {
+            border: 1px solid #eaeaea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .btn-primary {
+            background-color: #AD0569;
+            border-color: #AD0569;
+        }
+
+        .btn-primary:hover {
+            background-color: #8c0452;
+            border-color: #8c0452;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .btn-secondary,
+            .btn-primary {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .d-flex {
+                flex-direction: column-reverse;
+                align-items: center;
+            }
+        }
+    </style>
 {% endblock %}

@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Question;
-use App\Entity\Category;
-use App\Entity\User;
+use App\Entity\Answer;
 use App\Form\QuestionType;
+use App\Form\AnswerType;
 use App\Repository\CategoryRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\UserRepository;
@@ -34,27 +34,21 @@ class QuestionController extends AbstractController
     #[Route('/', name: 'app_question_index', methods: ['GET'])]
     public function index(QuestionRepository $questionRepository, CategoryRepository $categoryRepository, UserRepository $userRepository, Request $request): Response
     {
-        // Récupérer l'utilisateur connecté
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        // Pagination
         $page = $request->query->getInt('page', 1);
         $limit = 5;
         $offset = ($page - 1) * $limit;
 
-        // Récupérer les questions de l'utilisateur connecté
-        $questions = $questionRepository->findBy(['user' => $user], ['id' => 'DESC'], $limit, $offset);
+        $totalQuestions = $questionRepository->count([]);
 
-        // Calculer le nombre total de questions de l'utilisateur
+        $questions = $questionRepository->findBy([], ['id' => 'DESC'], $limit, $offset);
+
         $totalQuestions = count($questions);
 
-        // Calculer le nombre total de pages
+
         $totalPages = ceil($totalQuestions / $limit);
 
-        // Récupérer toutes les catégories pour le formulaire
         $categories = $categoryRepository->findAll();
 
-        // Récupérer tous les auteurs (utilisateurs) pour le formulaire
         $authors = $userRepository->findAll();
 
         return $this->render('question/index.html.twig', [
@@ -164,5 +158,35 @@ class QuestionController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_question_index');
+    }
+
+
+    #[Route('/{id}', name: 'app_question_show')]
+    public function show(Question $question, Request $request, EntityManagerInterface $em): Response
+    {
+        if (!$question) {
+            throw $this->createNotFoundException('La question n\'existe pas.');
+        }
+        $answer = new Answer();
+        // Définir la date de publication à la date actuelle
+        $answer->setCreatedAt(new \DateTimeImmutable());
+        $form = $this->createForm(AnswerType::class, $answer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $answer->setQuestion($question);
+            $answer->setUser($this->getUser()); // Assurez-vous que l'utilisateur est connecté
+            // $answer->setPublicationDate(new \DateTime());
+
+            $em->persist($answer);
+            $em->flush();
+
+            return $this->redirectToRoute('app_question_show', ['id' => $question->getId()]);
+        }
+
+        return $this->render('question/show.html.twig', [
+            'question' => $question,
+            'form' => $form->createView(),
+        ]);
     }
 }

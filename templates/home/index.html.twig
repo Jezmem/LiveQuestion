@@ -5,111 +5,117 @@
 
 {% block body %}
 	<div style="margin:3%;">
-		<div style="margin:3%;">
-			<div class="d-flex flex-wrap align-items-center">
-				<img src="uploads/images/{{ derniere_question.image }}" class="img-responsive last-question-image">
-				<div class="last-question-element ms-lg-5 mt-3 mt-lg-0">
-					<div class="d-flex align-items-center fs-4">
-						<p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
-						<p class="mb-0 fw-bold px-2">.</p>
-						<p class="mb-0">
-							{% set elapsedTime = now.timestamp - derniere_question.publicationDate.timestamp %}
-
-							{% set timeText = '' %}
-							{% set timeValue = 0 %}
-
-							{% if elapsedTime < 60 %}
-								{% set timeText = 'seconde' %}
-								{% set timeValue = elapsedTime %}
-							{% elseif elapsedTime < 3600 %}
-								{% set timeText = 'minute' %}
-								{% set timeValue = elapsedTime // 60 %}
-							{% elseif elapsedTime < 86400 %}
-								{% set timeText = 'heure' %}
-								{% set timeValue = elapsedTime // 3600 %}
-							{% elseif elapsedTime < 604800 %}
-								{% set timeText = 'jour' %}
-								{% set timeValue = elapsedTime // 86400 %}
-							{% elseif elapsedTime < 2592000 %}
-								{% set timeText = 'semaine' %}
-								{% set timeValue = elapsedTime // 604800 %}
-							{% elseif elapsedTime < 31536000 %}
-								{% set timeText = 'mois' %}
-								{% set timeValue = elapsedTime // 2592000 %}
-							{% else %}
-								{% set timeText = 'an' %}
-								{% set timeValue = elapsedTime // 31536000 %}
-							{% endif %}
-
-							{{ timeValue }}
-							{{ timeText }}
-							{% if timeValue > 1 %}s
-							{% endif %}
-						</p>
-					</div>
-					<p class="fs-2 fw-medium my-2">{{ derniere_question.title }}</p>
-					<p class="fs-4 text-custom">{{ derniere_question.Answer|length }}
-						réponses - par
-						{{ derniere_question.user.username }}</p>
-				</div>
-			</div>
-		</div>
-
-
-		<h1 class="section-title">Dernières questions</h1>
-
-		<div class="row">
-			{% for question in dernieres_questions %}
-				<div class="col-md-4 mb-4">
-					<div class="questions position-relative">
-						<div class="category-label position-absolute">{{ question.category.name }}</div>
-						<img class="questions-image img-fluid w-100" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
-						<p class="questions-text mt-2">{{ question.title }}</p>
-						<p class="text-custom">
-							{{ question.Answer|length }}
-							réponses - Par
-							{{ question.user.username }}
-							-
-							{% set minutes = (now|date('U') - question.publicationDate|date('U')) // 60 %}
-							Il y a
-							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
-
-							{% set timeText = '' %}
-							{% set timeValue = 0 %}
-
-							{% if elapsedTime < 60 %}
-								{% set timeText = 'seconde' %}
-								{% set timeValue = elapsedTime %}
-							{% elseif elapsedTime < 3600 %}
-								{% set timeText = 'minute' %}
-								{% set timeValue = elapsedTime // 60 %}
-							{% elseif elapsedTime < 86400 %}
-								{% set timeText = 'heure' %}
-								{% set timeValue = elapsedTime // 3600 %}
-							{% elseif elapsedTime < 604800 %}
-								{% set timeText = 'jour' %}
-								{% set timeValue = elapsedTime // 86400 %}
-							{% elseif elapsedTime < 2592000 %}
-								{% set timeText = 'semaine' %}
-								{% set timeValue = elapsedTime // 604800 %}
-							{% elseif elapsedTime < 31536000 %}
-								{% set timeText = 'mois' %}
-								{% set timeValue = elapsedTime // 2592000 %}
-							{% else %}
-								{% set timeText = 'an' %}
-								{% set timeValue = elapsedTime // 31536000 %}
-							{% endif %}
-
-							{{ timeValue }}
-							{{ timeText }}
-							{% if timeValue > 1 %}s
-							{% endif %}
-						</p>
-					</div>
-				</div>
-			{% endfor %}
-		</div>
-
+        <div class="mb-4" style="padding: 1%;">
+            <a href="{{ path('app_question_show', {'id': derniere_question.id}) }}" class="question-link">
+                <div class="questions position-relative">
+                    <div class="category-label position-absolute">{{ derniere_question.Category.name }}</div>
+        
+                    <div class="row g-0 d-flex align-items-center">
+                        <div class="col-md-4">
+                            <img src="uploads/images/{{ derniere_question.image }}" class="img-fluid rounded-start last-question-image" alt="Image pour {{ derniere_question.title }}">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body last-question-element">
+                                <div class="d-flex align-items-center fs-4 mb-2">
+                                    <p class="mb-0 fw-bold">{{ derniere_question.Category.name }}</p>
+                                    <p class="mb-0 fw-bold px-2">.</p>
+                                    <p class="mb-0">
+                                        {% set elapsedTime = now.timestamp - derniere_question.publicationDate.timestamp %}
+        
+                                        {% set timeText = '' %}
+                                        {% set timeValue = 0 %}
+        
+                                        {% if elapsedTime < 60 %}
+                                            {% set timeText = 'seconde' %}
+                                            {% set timeValue = elapsedTime %}
+                                        {% elseif elapsedTime < 3600 %}
+                                            {% set timeText = 'minute' %}
+                                            {% set timeValue = elapsedTime // 60 %}
+                                        {% elseif elapsedTime < 86400 %}
+                                            {% set timeText = 'heure' %}
+                                            {% set timeValue = elapsedTime // 3600 %}
+                                        {% elseif elapsedTime < 604800 %}
+                                            {% set timeText = 'jour' %}
+                                            {% set timeValue = elapsedTime // 86400 %}
+                                        {% elseif elapsedTime < 2592000 %}
+                                            {% set timeText = 'semaine' %}
+                                            {% set timeValue = elapsedTime // 604800 %}
+                                        {% elseif elapsedTime < 31536000 %}
+                                            {% set timeText = 'mois' %}
+                                            {% set timeValue = elapsedTime // 2592000 %}
+                                        {% else %}
+                                            {% set timeText = 'an' %}
+                                            {% set timeValue = elapsedTime // 31536000 %}
+                                        {% endif %}
+        
+                                        {{ timeValue }}
+                                        {{ timeText }}
+                                        {% if timeValue > 1 %}s
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <h5 class="card-title">{{ derniere_question.title }}</h5>
+                                <p class="card-text fs-4 text-custom">{{ derniere_question.Answer|length }} réponses - par {{ derniere_question.user.username }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <h1 class="section-title">Dernières questions</h1>
+        
+        <div class="row">
+            {% for question in dernieres_questions %}
+                <div class="col-md-4 mb-4">
+                    <a href="{{ path('app_question_show', {'id': question.id}) }}" class="question-link">
+                        <div class="questions position-relative">
+                            <div class="category-label position-absolute">{{ question.category.name }}</div>
+        
+                            <img class="questions-image img-fluid w-100" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
+                            <p>{{ question.title }}</p>
+                            <p class="text-custom">
+                                {{ question.Answer|length }} réponses - par {{ question.user.username }} -
+                                {% set minutes = (now|date('U') - question.publicationDate|date('U')) // 60 %}
+                                Il y a
+                                {% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+        
+                                {% set timeText = '' %}
+                                {% set timeValue = 0 %}
+        
+                                {% if elapsedTime < 60 %}
+                                    {% set timeText = 'seconde' %}
+                                    {% set timeValue = elapsedTime %}
+                                {% elseif elapsedTime < 3600 %}
+                                    {% set timeText = 'minute' %}
+                                    {% set timeValue = elapsedTime // 60 %}
+                                {% elseif elapsedTime < 86400 %}
+                                    {% set timeText = 'heure' %}
+                                    {% set timeValue = elapsedTime // 3600 %}
+                                {% elseif elapsedTime < 604800 %}
+                                    {% set timeText = 'jour' %}
+                                    {% set timeValue = elapsedTime // 86400 %}
+                                {% elseif elapsedTime < 2592000 %}
+                                    {% set timeText = 'semaine' %}
+                                    {% set timeValue = elapsedTime // 604800 %}
+                                {% elseif elapsedTime < 31536000 %}
+                                    {% set timeText = 'mois' %}
+                                    {% set timeValue = elapsedTime // 2592000 %}
+                                {% else %}
+                                    {% set timeText = 'an' %}
+                                    {% set timeValue = elapsedTime // 31536000 %}
+                                {% endif %}
+        
+                                {{ timeValue }}
+                                {{ timeText }}
+                                {% if timeValue > 1 %}s{% endif %}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        
 
 		<h1 class="section-title">Meilleurs auteurs</h1>
 
@@ -133,51 +139,53 @@
 		<div class="row" style="margin: 2% 0;">
 			{% for question in sportQuestions %}
 				<div class="col-12 col-md-6 col-lg-4 mb-4">
-					<div class="questions position-relative">
-						<div class="category-label position-absolute">{{ question.category.name }}</div>
-						<img class="questions-image img-fluid" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
-						<p class="questions-text mt-2">{{ question.title }}</p>
-						<p class="text-custom">
-							{{ question.Answer|length }}
-							réponses - Par
-							{{ question.user.firstName }}
-							{{ question.user.lastName }}
-							- Il y a
-							{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+                    <a href="{{ path('app_question_show', {'id': question.id}) }}" class="question-link">
+                        <div class="questions position-relative">
+                            <div class="category-label position-absolute">{{ question.category.name }}</div>
+                            <img class="questions-image img-fluid" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
+                            <p>{{ question.title }}</p>
+                            <p class="text-custom">
+                                {{ question.Answer|length }}
+                                réponses - Par
+                                {{ question.user.firstName }}
+                                {{ question.user.lastName }}
+                                - Il y a
+                                {% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
 
-							{% set timeText = '' %}
-							{% set timeValue = 0 %}
+                                {% set timeText = '' %}
+                                {% set timeValue = 0 %}
 
-							{% if elapsedTime < 60 %}
-								{% set timeText = 'seconde' %}
-								{% set timeValue = elapsedTime %}
-							{% elseif elapsedTime < 3600 %}
-								{% set timeText = 'minute' %}
-								{% set timeValue = elapsedTime // 60 %}
-							{% elseif elapsedTime < 86400 %}
-								{% set timeText = 'heure' %}
-								{% set timeValue = elapsedTime // 3600 %}
-							{% elseif elapsedTime < 604800 %}
-								{% set timeText = 'jour' %}
-								{% set timeValue = elapsedTime // 86400 %}
-							{% elseif elapsedTime < 2592000 %}
-								{% set timeText = 'semaine' %}
-								{% set timeValue = elapsedTime // 604800 %}
-							{% elseif elapsedTime < 31536000 %}
-								{% set timeText = 'mois' %}
-								{% set timeValue = elapsedTime // 2592000 %}
-							{% else %}
-								{% set timeText = 'an' %}
-								{% set timeValue = elapsedTime // 31536000 %}
-							{% endif %}
+                                {% if elapsedTime < 60 %}
+                                    {% set timeText = 'seconde' %}
+                                    {% set timeValue = elapsedTime %}
+                                {% elseif elapsedTime < 3600 %}
+                                    {% set timeText = 'minute' %}
+                                    {% set timeValue = elapsedTime // 60 %}
+                                {% elseif elapsedTime < 86400 %}
+                                    {% set timeText = 'heure' %}
+                                    {% set timeValue = elapsedTime // 3600 %}
+                                {% elseif elapsedTime < 604800 %}
+                                    {% set timeText = 'jour' %}
+                                    {% set timeValue = elapsedTime // 86400 %}
+                                {% elseif elapsedTime < 2592000 %}
+                                    {% set timeText = 'semaine' %}
+                                    {% set timeValue = elapsedTime // 604800 %}
+                                {% elseif elapsedTime < 31536000 %}
+                                    {% set timeText = 'mois' %}
+                                    {% set timeValue = elapsedTime // 2592000 %}
+                                {% else %}
+                                    {% set timeText = 'an' %}
+                                    {% set timeValue = elapsedTime // 31536000 %}
+                                {% endif %}
 
-							{{ timeValue }}
-							{{ timeText }}
-							{% if timeValue > 1 %}s
-							{% endif %}
+                                {{ timeValue }}
+                                {{ timeText }}
+                                {% if timeValue > 1 %}s
+                                {% endif %}
 
-						</p>
-					</div>
+                            </p>
+                        </div>
+                    </a>
 				</div>
 			{% endfor %}
 		</div>
@@ -189,95 +197,99 @@
 			{% if randomQuestions|length > 0 %}
 				{% set firstQuestion = randomQuestions[0] %}
 				<div class="col-lg-6 mb-4">
-					<div class="p-3">
-						<img class="img-fluid w-100 mb-3" src="uploads/images/{{ firstQuestion.image }}" alt="Image pour {{ firstQuestion.title }}">
-						<p class="fs-3 fw-bold">{{ firstQuestion.title }}</p>
-						<p class="text-custom">{{ firstQuestion.Answer|length }}
-							réponses - Par
-							{{ firstQuestion.user.firstName }}
-							{{ firstQuestion.user.lastName }}
-							- Il y a
-							{% set elapsedTime = now.timestamp - firstQuestion.publicationDate.timestamp %}
+                    <a href="{{ path('app_question_show', {'id': firstQuestion.id}) }}" class="question-link">
+                        <div class="p-3">
+                            <img class="img-fluid w-100 mb-3" src="uploads/images/{{ firstQuestion.image }}" alt="Image pour {{ firstQuestion.title }}">
+                            <p>{{ firstQuestion.title }}</p>
+                            <p class="text-custom">{{ firstQuestion.Answer|length }}
+                                réponses - Par
+                                {{ firstQuestion.user.firstName }}
+                                {{ firstQuestion.user.lastName }}
+                                - Il y a
+                                {% set elapsedTime = now.timestamp - firstQuestion.publicationDate.timestamp %}
 
-							{% set timeText = '' %}
-							{% set timeValue = 0 %}
+                                {% set timeText = '' %}
+                                {% set timeValue = 0 %}
 
-							{% if elapsedTime < 60 %}
-								{% set timeText = 'seconde' %}
-								{% set timeValue = elapsedTime %}
-							{% elseif elapsedTime < 3600 %}
-								{% set timeText = 'minute' %}
-								{% set timeValue = elapsedTime // 60 %}
-							{% elseif elapsedTime < 86400 %}
-								{% set timeText = 'heure' %}
-								{% set timeValue = elapsedTime // 3600 %}
-							{% elseif elapsedTime < 604800 %}
-								{% set timeText = 'jour' %}
-								{% set timeValue = elapsedTime // 86400 %}
-							{% elseif elapsedTime < 2592000 %}
-								{% set timeText = 'semaine' %}
-								{% set timeValue = elapsedTime // 604800 %}
-							{% elseif elapsedTime < 31536000 %}
-								{% set timeText = 'mois' %}
-								{% set timeValue = elapsedTime // 2592000 %}
-							{% else %}
-								{% set timeText = 'an' %}
-								{% set timeValue = elapsedTime // 31536000 %}
-							{% endif %}
+                                {% if elapsedTime < 60 %}
+                                    {% set timeText = 'seconde' %}
+                                    {% set timeValue = elapsedTime %}
+                                {% elseif elapsedTime < 3600 %}
+                                    {% set timeText = 'minute' %}
+                                    {% set timeValue = elapsedTime // 60 %}
+                                {% elseif elapsedTime < 86400 %}
+                                    {% set timeText = 'heure' %}
+                                    {% set timeValue = elapsedTime // 3600 %}
+                                {% elseif elapsedTime < 604800 %}
+                                    {% set timeText = 'jour' %}
+                                    {% set timeValue = elapsedTime // 86400 %}
+                                {% elseif elapsedTime < 2592000 %}
+                                    {% set timeText = 'semaine' %}
+                                    {% set timeValue = elapsedTime // 604800 %}
+                                {% elseif elapsedTime < 31536000 %}
+                                    {% set timeText = 'mois' %}
+                                    {% set timeValue = elapsedTime // 2592000 %}
+                                {% else %}
+                                    {% set timeText = 'an' %}
+                                    {% set timeValue = elapsedTime // 31536000 %}
+                                {% endif %}
 
-							{{ timeValue }}
-							{{ timeText }}
-							{% if timeValue > 1 %}s
-							{% endif %}
-						</p>
-					</div>
+                                {{ timeValue }}
+                                {{ timeText }}
+                                {% if timeValue > 1 %}s
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
 				</div>
 
 				<div class="col-lg-6 d-flex flex-wrap">
 					{% for question in randomQuestions[1:5] %}
 						<div class="col-6 p-2">
-							<div class="p-3 h-100">
-								<img class="img-fluid w-100 mb-2" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
-								<p class="fs-5">{{ question.title }}</p>
-								<p class="text-custom">{{ question.Answer|length }}
-									réponses - Par
-									{{ question.user.firstName }}
-									{{ question.user.lastName }}
-									- Il y a
-									{% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
+                            <a href="{{ path('app_question_show', {'id': question.id}) }}" class="question-link">
+                                <div class="p-3 h-100">
+                                    <img class="img-fluid w-100 mb-2" src="uploads/images/{{ question.image }}" alt="Image pour {{ question.title }}">
+                                    <p>{{ question.title }}</p>
+                                    <p class="text-custom">{{ question.Answer|length }}
+                                        réponses - Par
+                                        {{ question.user.firstName }}
+                                        {{ question.user.lastName }}
+                                        - Il y a
+                                        {% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
 
-									{% set timeText = '' %}
-									{% set timeValue = 0 %}
+                                        {% set timeText = '' %}
+                                        {% set timeValue = 0 %}
 
-									{% if elapsedTime < 60 %}
-										{% set timeText = 'seconde' %}
-										{% set timeValue = elapsedTime %}
-									{% elseif elapsedTime < 3600 %}
-										{% set timeText = 'minute' %}
-										{% set timeValue = elapsedTime // 60 %}
-									{% elseif elapsedTime < 86400 %}
-										{% set timeText = 'heure' %}
-										{% set timeValue = elapsedTime // 3600 %}
-									{% elseif elapsedTime < 604800 %}
-										{% set timeText = 'jour' %}
-										{% set timeValue = elapsedTime // 86400 %}
-									{% elseif elapsedTime < 2592000 %}
-										{% set timeText = 'semaine' %}
-										{% set timeValue = elapsedTime // 604800 %}
-									{% elseif elapsedTime < 31536000 %}
-										{% set timeText = 'mois' %}
-										{% set timeValue = elapsedTime // 2592000 %}
-									{% else %}
-										{% set timeText = 'an' %}
-										{% set timeValue = elapsedTime // 31536000 %}
-									{% endif %}
+                                        {% if elapsedTime < 60 %}
+                                            {% set timeText = 'seconde' %}
+                                            {% set timeValue = elapsedTime %}
+                                        {% elseif elapsedTime < 3600 %}
+                                            {% set timeText = 'minute' %}
+                                            {% set timeValue = elapsedTime // 60 %}
+                                        {% elseif elapsedTime < 86400 %}
+                                            {% set timeText = 'heure' %}
+                                            {% set timeValue = elapsedTime // 3600 %}
+                                        {% elseif elapsedTime < 604800 %}
+                                            {% set timeText = 'jour' %}
+                                            {% set timeValue = elapsedTime // 86400 %}
+                                        {% elseif elapsedTime < 2592000 %}
+                                            {% set timeText = 'semaine' %}
+                                            {% set timeValue = elapsedTime // 604800 %}
+                                        {% elseif elapsedTime < 31536000 %}
+                                            {% set timeText = 'mois' %}
+                                            {% set timeValue = elapsedTime // 2592000 %}
+                                        {% else %}
+                                            {% set timeText = 'an' %}
+                                            {% set timeValue = elapsedTime // 31536000 %}
+                                        {% endif %}
 
-									{{ timeValue }}
-									{{ timeText }}
-									{% if timeValue > 1 %}s
-									{% endif %}
-								</p>
-							</div>
+                                        {{ timeValue }}
+                                        {{ timeText }}
+                                        {% if timeValue > 1 %}s
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </a>
 						</div>
 					{% endfor %}
 				</div>

@@ -26,15 +26,7 @@
         </div>
 
         <div class="questions-section">
-            <h2 class="section-title">Mes questions publiées</h2>
-            <ul class="questions-list">
-                {% for question in userQuestions %}
-                    <li class="question-item">
-                        <a href="{{ path('app_question_show', {id: question.id}) }}">{{ question.title }}</a> 
-                        <span class="text-muted">- Publiée le {{ question.publicationDate|date('d/m/Y') }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
+            <a href="{{ path('app_my_questions') }}">Voir mes questions</a>
         </div>
     </div>
 
