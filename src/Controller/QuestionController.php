@@ -13,13 +13,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
 
 #[Route('/question')]
 class QuestionController extends AbstractController
@@ -32,23 +31,52 @@ class QuestionController extends AbstractController
     }
 
     #[Route('/', name: 'app_question_index', methods: ['GET'])]
-    public function index(QuestionRepository $questionRepository, CategoryRepository $categoryRepository, UserRepository $userRepository, Request $request): Response
-    {
+    public function index(
+        QuestionRepository $questionRepository, 
+        CategoryRepository $categoryRepository, 
+        UserRepository $userRepository, 
+        Request $request
+    ): Response {
         $page = $request->query->getInt('page', 1);
         $limit = 5;
         $offset = ($page - 1) * $limit;
 
-        $totalQuestions = $questionRepository->count([]);
+        // Filtrer par titre, auteur, catégorie
+        $title = $request->query->get('title');
+        $author = $request->query->get('author');
+        $categoryName = $request->query->get('category');
 
-        $questions = $questionRepository->findBy([], ['id' => 'DESC'], $limit, $offset);
+        // Construire le critère de recherche
+        $criteria = [];
+        if ($title) {
+            $criteria['title'] = $title;
+        }
+        if ($author) {
+            $criteria['user'] = $author;
+        }
+        if ($categoryName) {
+            // Rechercher la catégorie par nom
+            $category = $categoryRepository->findOneBy(['name' => $categoryName]);
+            if ($category) {
+                $criteria['category'] = $category;
+            }
+        }
 
-        $totalQuestions = count($questions);
+        // Compter le nombre total de questions pour les critères donnés
+        $totalQuestions = $questionRepository->count($criteria);
 
+        // Récupérer les questions paginées
+        $questions = $questionRepository->findBy(
+            $criteria,
+            ['id' => 'DESC'],
+            $limit,
+            $offset
+        );
 
+        // Calcul du nombre total de pages
         $totalPages = ceil($totalQuestions / $limit);
 
         $categories = $categoryRepository->findAll();
-
         $authors = $userRepository->findAll();
 
         return $this->render('question/index.html.twig', [
@@ -57,13 +85,15 @@ class QuestionController extends AbstractController
             'authors' => $authors,
             'currentPage' => $page,
             'totalPages' => $totalPages,
-            'now' => new \DateTime(),  // Ajouter la date actuelle
         ]);
     }
 
     #[Route('/new', name: 'app_question_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-    {
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        SluggerInterface $slugger
+    ): Response {
         $question = new Question();
 
         $form = $this->createForm(QuestionType::class, $question);
@@ -81,7 +111,7 @@ class QuestionController extends AbstractController
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 try {
                     $imageFile->move(
@@ -123,10 +153,12 @@ class QuestionController extends AbstractController
         ]);
     }
 
-
     #[Route('/edit/{id}', name: 'app_question_edit')]
-    public function edit(Request $request, Question $question, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request, 
+        Question $question, 
+        EntityManagerInterface $entityManager
+    ): Response {
         // Vérifier que l'utilisateur connecté est l'auteur de la question
         if ($question->getUser() !== $this->tokenStorage->getToken()->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette question.');
@@ -160,10 +192,12 @@ class QuestionController extends AbstractController
         return $this->redirectToRoute('app_question_index');
     }
 
-
     #[Route('/{id}', name: 'app_question_show')]
-    public function show(Question $question, Request $request, EntityManagerInterface $em): Response
-    {
+    public function show(
+        Question $question, 
+        Request $request, 
+        EntityManagerInterface $em
+    ): Response {
         if (!$question) {
             throw $this->createNotFoundException('La question n\'existe pas.');
         }

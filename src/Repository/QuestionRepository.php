@@ -16,6 +16,56 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
+    public function findByCriteria(array $criteria, $limit, $offset)
+    {
+        $qb = $this->createQueryBuilder('q');
+
+        if (!empty($criteria['title'])) {
+            $qb->andWhere('q.title LIKE :title')
+                ->setParameter('title', '%' . $criteria['title'] . '%');
+        }
+
+        if (!empty($criteria['user'])) {
+            $qb->andWhere('q.user = :user')
+                ->setParameter('user', $criteria['user']);
+        }
+
+        if (!empty($criteria['category'])) {
+            $qb->andWhere('q.category = :category')
+                ->setParameter('category', $criteria['category']);
+        }
+
+        return $qb->setFirstResult($offset)
+                ->setMaxResults($limit)
+                ->orderBy('q.id', 'DESC')
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function countByCriteria(array $criteria)
+    {
+        $qb = $this->createQueryBuilder('q')
+            ->select('COUNT(q.id)');
+
+        if (!empty($criteria['title'])) {
+            $qb->andWhere('q.title LIKE :title')
+                ->setParameter('title', '%' . $criteria['title'] . '%');
+        }
+
+        if (!empty($criteria['user'])) {
+            $qb->andWhere('q.user = :user')
+                ->setParameter('user', $criteria['user']);
+        }
+
+        if (!empty($criteria['category'])) {
+            $qb->andWhere('q.category = :category')
+                ->setParameter('category', $criteria['category']);
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+
     public function findByCategoryWithLimit(string $categoryName, int $limit): array
     {
         return $this->createQueryBuilder('q')

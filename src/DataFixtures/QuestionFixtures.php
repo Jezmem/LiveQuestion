@@ -18,44 +18,74 @@ class QuestionFixtures extends Fixture implements DependentFixtureInterface, Fix
         $questions = [
             [
                 'title' => 'Est-ce que la France est à la hauteur sur cette coupe d’Euro ?',
-                'publicationDate' => '13/08/2024',
                 'image' => 'euroCup.svg',
                 'user' => 'Jezmem',
                 'category' => 'Sport',
             ],
             [
                 'title' => 'CS2 vs Valorant, quel jeu est le meilleur au quotidien ?',
-                'publicationDate' => '13/08/2024',
                 'image' => 'cs2VsValo.svg',
                 'user' => 'TWhiteShadow',
                 'category' => 'Technologie',
             ],
             [
                 'title' => 'Que pensez-vous de la performance de Pierre Niney dans le comte de Monte Cristo ?',
-                'publicationDate' => '13/08/2024',
                 'image' => 'monteCristo.svg',
                 'user' => 'Galeih',
                 'category' => 'Cinéma',
             ],
             [
                 'title' => 'Suivez-vous le tour de France cette année ?',
-                'publicationDate' => '13/08/2024',
                 'image' => 'franceTour.svg',
                 'user' => 'Magiks',
                 'category' => 'Sport',
             ],
             [
                 'title' => 'MMA : match de Saint-Denis a vaincu son adversaire Marc Diakiese, qui a suivi ?',
-                'publicationDate' => '13/08/2024',
                 'image' => 'MMA.svg',
                 'user' => 'Okinest',
                 'category' => 'Sport',
             ],
             [
-                'title' => 'Que pensez-vous de la série Game of thrones house of the dragon ?',
-                'publicationDate' => '13/08/2024',
+                'title' => 'Que pensez-vous de la série Game of Thrones House of the Dragon ?',
                 'image' => 'got.svg',
                 'user' => 'Yamosai',
+                'category' => 'Cinéma',
+            ],
+            [
+                'title' => 'Quel est l’impact des nouvelles technologies sur l’éducation ?',
+                'image' => 'tech_education.jpg',
+                'user' => 'MentalWorker',
+                'category' => 'Éducation',
+            ],
+            [
+                'title' => 'Comment améliorer sa santé mentale grâce à la méditation ?',
+                'image' => 'meditation_health.jpg',
+                'user' => 'MentalWorker',
+                'category' => 'Santé',
+            ],
+            [
+                'title' => 'L’évolution du cinéma d’action depuis les années 80',
+                'image' => 'action_cinema.jpg',
+                'user' => 'Jezmem', 
+                'category' => 'Cinéma',
+            ],
+            [
+                'title' => 'Les enjeux du sport électronique en 2024',
+                'image' => 'esports_2024.webp',
+                'user' => 'Jezmem', 
+                'category' => 'Sport',
+            ],
+            [
+                'title' => 'L’impact de l’IA sur le marché du travail',
+                'image' => 'ai_work.webp',
+                'user' => 'Jezmem', 
+                'category' => 'Technologie',
+            ],
+            [
+                'title' => 'Le renouveau du cinéma français',
+                'image' => 'french_cinema.jpeg',
+                'user' => 'Magiks',
                 'category' => 'Cinéma',
             ],
         ];
@@ -64,19 +94,15 @@ class QuestionFixtures extends Fixture implements DependentFixtureInterface, Fix
             $question = new Question();
             $question->setTitle($questionData['title']);
 
-            // Conversion de la chaîne de caractères en DateTime
-            $publicationDate = \DateTime::createFromFormat('d/m/Y', $questionData['publicationDate']);
-            $question->setPublicationDate($publicationDate);
+            $question->setPublicationDate(new \DateTime());
 
             $question->setImage($questionData['image']);
 
-            // Récupération de l'utilisateur
             $user = $manager->getRepository(User::class)->findOneBy(['username' => $questionData['user']]);
             if ($user) {
                 $question->setUser($user);
             }
 
-            // Récupération de la catégorie
             $category = $manager->getRepository(Category::class)->findOneBy(['name' => $questionData['category']]);
             if ($category) {
                 $question->setCategory($category);
@@ -87,6 +113,7 @@ class QuestionFixtures extends Fixture implements DependentFixtureInterface, Fix
 
         $manager->flush();
     }
+
     public static function getGroups(): array
     {
         return ['main_data'];

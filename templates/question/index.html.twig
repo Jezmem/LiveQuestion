@@ -35,55 +35,28 @@
     </form>
 
     {% for question in questions %}
-        <!-- Affichage des questions (ton code existant) -->
-        <div class="question-item mb-5">
-            <div class="row">
-                <!-- Image Section -->
-                <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
-                    <img src="../uploads/images/{{ question.image }}" class="img-fluid w-100 last-question-image" alt="{{ question.title }}">
-                </div>
-
-                <!-- Content Section -->
-                <div class="col-lg-8 col-md-7">
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="bg-custom-category">{{ question.Category.name }}</span>
-                        <span class="mx-2">•</span>
-                        <span>
-                            {% set elapsedTime = now.timestamp - question.publicationDate.timestamp %}
-                            {% set timeText = '' %}
-                            {% set timeValue = 0 %}
-                            {% if elapsedTime < 60 %}
-                                {% set timeText = 'seconde' %}
-                                {% set timeValue = elapsedTime %}
-                            {% elseif elapsedTime < 3600 %}
-                                {% set timeText = 'minute' %}
-                                {% set timeValue = elapsedTime // 60 %}
-                            {% elseif elapsedTime < 86400 %}
-                                {% set timeText = 'heure' %}
-                                {% set timeValue = elapsedTime // 3600 %}
-                            {% elseif elapsedTime < 604800 %}
-                                {% set timeText = 'jour' %}
-                                {% set timeValue = elapsedTime // 86400 %}
-                            {% elseif elapsedTime < 2592000 %}
-                                {% set timeText = 'semaine' %}
-                                {% set timeValue = elapsedTime // 604800 %}
-                            {% elseif elapsedTime < 31536000 %}
-                                {% set timeText = 'mois' %}
-                                {% set timeValue = elapsedTime // 2592000 %}
-                            {% else %}
-                                {% set timeText = 'an' %}
-                                {% set timeValue = elapsedTime // 31536000 %}
-                            {% endif %}
-                            {{ timeValue }} {{ timeText }}{% if timeValue > 1 %}s{% endif %}
-                        </span>
+        <a href="{{ path('app_question_show', {'id': question.id}) }}" class="question-link">
+            <div class="card mb-5 shadow-sm question-card" style="padding: 1%;">
+                <div class="row no-gutters">
+                    <div class="col-lg-4 col-md-5">
+                        <img src="../uploads/images/{{ question.image }}" class="img-fluid w-100 card-img" alt="{{ question.title }}" style="height: 250px; object-fit: cover;">
                     </div>
-                    <h2 class="fs-4 fw-bold">{{ question.title }}</h2>
-                    <p class="text-muted">
-                        {{ question.Answer|length }} réponses - par {{ question.user.username }}
-                    </p>
+                    <div class="col-lg-8 col-md-7">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="bg-custom-category">{{ question.Category.name }}</span>
+                                <span class="mx-2">•</span>
+                                <span class="time-elapsed" data-publication-date="{{ question.publicationDate|date('Y-m-d H:i:s') }}"></span>
+                            </div>
+                            <h2 class="fs-4 fw-bold card-title">{{ question.title }}</h2>
+                            <p class="text-muted card-text">
+                                {{ question.Answer|length }} réponses - par {{ question.user.username }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     {% else %}
         <p>Aucune question disponible.</p>
     {% endfor %}
@@ -117,4 +90,51 @@
         </ul>
     </nav>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.time-elapsed').forEach(function(element) {
+            var publicationDate = element.getAttribute('data-publication-date');
+            var timeAgo = moment(publicationDate).fromNow();
+            element.textContent = timeAgo;
+        });
+    });
+</script>
+
+<style>
+    .bg-custom-category {
+        background-color: #AD0569;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .question-card {
+        transition: box-shadow 0.3s ease;
+    }
+
+    .question-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img {
+        border-radius: 5px;
+    }
+
+    @media(max-width: 768px) {
+        .bg-custom-category {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+        }
+    }
+</style>
 {% endblock %}

@@ -11,7 +11,6 @@ class CategoryFixtures extends Fixture implements FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // Liste des catégories
         $categories = [
             'Technologie',
             'Santé',

@@ -1,40 +1,25 @@
 {% block footer %}
-	<div class="footer mx-auto py-3">
-		<div style="border-bottom: solid 1px black">
-			<h1 style="color: #AD0569;">LiveQuestion</h1>
-			<p>Échangez autour de vos thématiques préférées</p>
-		</div>
+    <div class="footer mx-auto py-3">
+        <div style="border-bottom: solid 1px black">
+            <h1 style="color: #AD0569;">LiveQuestion</h1>
+            <p>Échangez autour de vos thématiques préférées</p>
+        </div>
+        {% if app.user %}
+            <div class="d-flex justify-content-between" style="margin: 2% 0;">
+                <a href="{{ path('app_question_index', {'category': 'Sport'}) }}">Sport</a>
+                <a href="{{ path('app_question_index', {'category': 'Politique'}) }}">Politique</a>
+                <a href="{{ path('app_question_index', {'category': 'Santé'}) }}">Santé</a>
+                <a href="{{ path('app_question_index', {'category': 'Business'}) }}">Business</a>
+                <a href="{{ path('app_question_index', {'category': 'Musique'}) }}">Musique</a>
+                <a href="{{ path('app_question_index', {'category': 'Film'}) }}">Film</a>
+                <a href="{{ path('app_question_index', {'category': 'Jeux-vidéo'}) }}">Jeux-vidéo</a>
+            </div>
+        {% endif %}
+    </div>
 
-		<div class="d-flex justify-content-between" style="margin: 2% 0;">
-			<a href="#">Sport</a>
-
-			<a href="#">Politique</a>
-
-			<a href="#">Santé</a>
-
-			<a href="#">Business</a>
-
-			<a href="#">Musique</a>
-
-			<a href="#">Film</a>
-
-			<a href="#">Jeux-vidéo</a>
-
-		</div>
-	</div>
+    <style>
+        .footer a:hover {
+            color: #AD0569 !important;
+        }
+    </style>
 {% endblock %}
-
-<style>
-	a{
-		text-decoration: none;
-		color: black;
-	}
-	
-	.footer {
-		width: 90vw;
-		color: #757575;
-		text-align: center;
-		position: relative;
-		bottom: 0;
-	}
-</style>

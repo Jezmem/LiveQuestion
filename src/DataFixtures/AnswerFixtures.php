@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DataFixtures;
 
 use App\Entity\Answer;
@@ -13,7 +14,6 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface, Fixtu
 {
     public function load(ObjectManager $manager): void
     {
-        // Liste des réponses avec utilisateurs associés
         $answers = [
             ['question' => 'Est-ce que la France est à la hauteur sur cette coupe d’Euro ?', 'content' => 'Oui, ils ont fait un excellent parcours jusqu\'à présent.', 'user' => 'Jezmem'],
             ['question' => 'Est-ce que la France est à la hauteur sur cette coupe d’Euro ?', 'content' => 'La France a montré de grandes performances, surtout en défense.', 'user' => 'TWhiteShadow'],
@@ -37,13 +37,21 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface, Fixtu
             ['question' => 'Que pensez-vous de la série Game of thrones house of the dragon ?', 'content' => 'House of the Dragon commence bien, avec des intrigues captivantes et des personnages forts.', 'user' => 'Galeih'],
             ['question' => 'Que pensez-vous de la série Game of thrones house of the dragon ?', 'content' => 'Les premiers épisodes sont prometteurs, avec une ambiance fidèle à l’univers de GOT.', 'user' => 'Magiks'],
             ['question' => 'Que pensez-vous de la série Game of thrones house of the dragon ?', 'content' => 'Je trouve que la série a su maintenir l’héritage de Game of Thrones tout en apportant des nouveautés.', 'user' => 'Okinest'],
+
+            ['question' => 'Quel est l’impact des nouvelles technologies sur l’éducation ?', 'content' => 'Les nouvelles technologies permettent une meilleure accessibilité aux ressources éducatives.', 'user' => 'Jezmem'],
+            ['question' => 'Quel est l’impact des nouvelles technologies sur l’éducation ?', 'content' => 'Elles ont révolutionné l’enseignement, rendant l’apprentissage plus interactif et dynamique.', 'user' => 'MentalWorker'],
+            ['question' => 'Comment améliorer sa santé mentale grâce à la méditation ?', 'content' => 'La méditation aide à réduire le stress et à améliorer la concentration.', 'user' => 'MentalWorker'],
+            ['question' => 'Comment améliorer sa santé mentale grâce à la méditation ?', 'content' => 'Je médite chaque jour, et cela a grandement amélioré mon bien-être.', 'user' => 'Magiks'],
+            ['question' => 'L’évolution du cinéma d’action depuis les années 80', 'content' => 'Le cinéma d’action a évolué avec plus de technologie et des scènes plus intenses.', 'user' => 'Jezmem'],
+            ['question' => 'Les enjeux du sport électronique en 2024', 'content' => 'Les compétitions e-sport sont de plus en plus populaires, avec des enjeux financiers énormes.', 'user' => 'Okinest'],
+            ['question' => 'L’impact de l’IA sur le marché du travail', 'content' => 'L’IA pourrait transformer de nombreux métiers, mais elle offre aussi des opportunités.', 'user' => 'MentalWorker'],
+            ['question' => 'Le renouveau du cinéma français', 'content' => 'Le cinéma français connaît un regain d’intérêt, avec des films innovants et créatifs.', 'user' => 'Magiks'],
         ];
 
         foreach ($answers as $answerData) {
             $answer = new Answer();
             $answer->setContent($answerData['content']);
 
-            // Trouver la question correspondante en se basant sur le titre
             $question = $manager->getRepository(Question::class)->findOneBy(['title' => $answerData['question']]);
             $user = $manager->getRepository(User::class)->findOneBy(['username' => $answerData['user']]);
             
@@ -51,11 +59,9 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface, Fixtu
                 $answer->setQuestion($question);
                 $answer->setUser($user);
 
-                // Définir la date de création (créée à une date aléatoire dans le passé)
                 $randomDate = new \DateTimeImmutable(sprintf('-%d days', rand(0, 365)));
                 $answer->setCreatedAt($randomDate);
 
-                // Persister la réponse
                 $manager->persist($answer);
             }
         }

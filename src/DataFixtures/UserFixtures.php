@@ -23,7 +23,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'Jezmem',
                 'email' => 'tomzarb98@gmail.com',
-                'password' => 'kk',
+                'password' => 'Str0ngP4ssw0rd',
                 'firstName' => 'Tom',
                 'lastName' => 'Zarb',
                 'roles' => ['ROLE_ADMIN']
@@ -31,7 +31,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'TWhiteShadow',
                 'email' => 'raphael.t.hendrick@gmail.com',
-                'password' => 'kk',
+                'password' => 'password',
                 'firstName' => 'Raphael',
                 'lastName' => 'Tourssel',
                 'roles' => ['ROLE_USER']
@@ -39,7 +39,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'Galeih',
                 'email' => 'florian.sauvage.etudiant@gmail.com',
-                'password' => 'kk',
+                'password' => 'password',
                 'firstName' => 'Florian',
                 'lastName' => 'Sauvage',
                 'roles' => ['ROLE_USER']
@@ -47,7 +47,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'Magiks',
                 'email' => 'dupaslucas8@gmail.com',
-                'password' => 'kk',
+                'password' => 'password',
                 'firstName' => 'Lucas',
                 'lastName' => 'Dupas',
                 'roles' => ['ROLE_USER']
@@ -55,7 +55,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'Okinest',
                 'email' => 'theoalleaume@gmail.com',
-                'password' => 'kk',
+                'password' => 'password',
                 'firstName' => 'Theo',
                 'lastName' => 'Alleaume',
                 'roles' => ['ROLE_USER']
@@ -63,9 +63,17 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             [
                 'username' => 'Yamosai',
                 'email' => 'moncet.yannis@gmail.com',
-                'password' => 'kk',
+                'password' => 'password',
                 'firstName' => 'Yannis',
                 'lastName' => 'Moncet',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'username' => 'MentalWorker',
+                'email' => 'jacquelotjeff@gmail.com',
+                'password' => 'password',
+                'firstName' => 'Jeff',
+                'lastName' => 'Martins',
                 'roles' => ['ROLE_USER']
             ],
         ];
@@ -77,11 +85,9 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             $user->setFirstName($userData['firstName']);
             $user->setLastName($userData['lastName']);
 
-            // Hachage du mot de passe
             $hashedPassword = $this->passwordHasher->hashPassword($user, $userData['password']);
             $user->setPassword($hashedPassword);
 
-            // Attribution des rôles
             $user->setRoles($userData['roles']);
 
             $manager->persist($user);

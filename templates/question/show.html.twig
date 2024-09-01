@@ -5,7 +5,8 @@
 {% block body %}
     <div class="container mt-5">
         <div class="d-flex flex-column">
-            <img src="../uploads/images/{{ question.image }}">
+            <!-- Limiter la taille de l'image avec max-width et max-height -->
+            <img src="../uploads/images/{{ question.image }}" class="img-fluid" style="max-width: 100%; height: auto; max-height: 600px; object-fit: cover; border-radius: 10px">
             <h1 class="text-center">{{ question.title }}</h1>
             <p class="text-center text-muted">Posté par {{ question.user.username }} - {{ question.publicationDate|date('d/m/Y H:i') }}</p>
         </div>
