@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 
-class CategoryFixtures extends Fixture implements FixtureGroupInterface
+class CategoryFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -29,8 +29,4 @@ class CategoryFixtures extends Fixture implements FixtureGroupInterface
         $manager->flush();
     }
 
-    public static function getGroups(): array
-    {
-        return ['first_load'];
-    }
 }

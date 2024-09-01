@@ -10,7 +10,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class AnswerFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class AnswerFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -67,11 +67,6 @@ class AnswerFixtures extends Fixture implements DependentFixtureInterface, Fixtu
         }
 
         $manager->flush();
-    }
-
-    public static function getGroups(): array
-    {
-        return ['second_load'];
     }
 
     public function getDependencies()
