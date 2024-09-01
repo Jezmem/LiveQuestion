@@ -83,13 +83,10 @@ class QuestionRepository extends ServiceEntityRepository
         $sql = 'SELECT * FROM question ORDER BY RAND() LIMIT :limit';
         $stmt = $this->connection->prepare($sql);
 
-        // Bind the parameter
         $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
 
-        // Execute the query
         $resultSet = $stmt->executeQuery();
 
-        // Fetch results as associative arrays
         return $resultSet->fetchAllAssociative();
     }
 

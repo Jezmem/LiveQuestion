@@ -41,12 +41,10 @@ class QuestionController extends AbstractController
         $limit = 5;
         $offset = ($page - 1) * $limit;
 
-        // Filtrer par titre, auteur, catégorie
         $title = $request->query->get('title');
         $author = $request->query->get('author');
         $categoryName = $request->query->get('category');
 
-        // Construire le critère de recherche
         $criteria = [];
         if ($title) {
             $criteria['title'] = $title;
@@ -55,17 +53,14 @@ class QuestionController extends AbstractController
             $criteria['user'] = $author;
         }
         if ($categoryName) {
-            // Rechercher la catégorie par nom
             $category = $categoryRepository->findOneBy(['name' => $categoryName]);
             if ($category) {
                 $criteria['category'] = $category;
             }
         }
 
-        // Compter le nombre total de questions pour les critères donnés
         $totalQuestions = $questionRepository->count($criteria);
 
-        // Récupérer les questions paginées
         $questions = $questionRepository->findBy(
             $criteria,
             ['id' => 'DESC'],
@@ -73,7 +68,6 @@ class QuestionController extends AbstractController
             $offset
         );
 
-        // Calcul du nombre total de pages
         $totalPages = ceil($totalQuestions / $limit);
 
         $categories = $categoryRepository->findAll();
@@ -100,11 +94,9 @@ class QuestionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer l'utilisateur connecté
             $user = $this->tokenStorage->getToken()->getUser();
             $question->setUser($user);
 
-            // Gestion de l'image uploadée
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
 
@@ -119,17 +111,13 @@ class QuestionController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // Gestion des erreurs lors du déplacement du fichier
                 }
 
-                // Stocker le nom de l'image dans l'entité
                 $question->setImage($newFilename);
             }
 
-            // Définir la date de publication à la date actuelle
             $question->setPublicationDate(new \DateTime());
 
-            // Enregistrer la question
             $entityManager->persist($question);
             $entityManager->flush();
 
@@ -145,7 +133,6 @@ class QuestionController extends AbstractController
     #[Route('/myquestions', name: 'app_my_questions')]
     public function myQuestions(QuestionRepository $questionRepository, UserInterface $user): Response
     {
-        // Récupérer les questions de l'utilisateur connecté
         $questions = $questionRepository->findBy(['user' => $user]);
 
         return $this->render('question/my-questions.html.twig', [
@@ -159,7 +146,6 @@ class QuestionController extends AbstractController
         Question $question, 
         EntityManagerInterface $entityManager
     ): Response {
-        // Vérifier que l'utilisateur connecté est l'auteur de la question
         if ($question->getUser() !== $this->tokenStorage->getToken()->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette question.');
         }
@@ -181,7 +167,6 @@ class QuestionController extends AbstractController
     #[Route('/delete/{id}', name: 'app_question_delete')]
     public function delete(Question $question, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier que l'utilisateur connecté est l'auteur de la question
         if ($question->getUser() !== $this->tokenStorage->getToken()->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette question.');
         }
@@ -202,15 +187,13 @@ class QuestionController extends AbstractController
             throw $this->createNotFoundException('La question n\'existe pas.');
         }
         $answer = new Answer();
-        // Définir la date de publication à la date actuelle
         $answer->setCreatedAt(new \DateTimeImmutable());
         $form = $this->createForm(AnswerType::class, $answer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $answer->setQuestion($question);
-            $answer->setUser($this->getUser()); // Assurez-vous que l'utilisateur est connecté
-            // $answer->setPublicationDate(new \DateTime());
+            $answer->setUser($this->getUser()); 
 
             $em->persist($answer);
             $em->flush();

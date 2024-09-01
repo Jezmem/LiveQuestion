@@ -18,8 +18,8 @@ class QuestionType extends AbstractType
             ->add('title')
             ->add('image', FileType::class, [
                 'label' => 'Image (JPG, PNG, etc.)',
-                'mapped' => false, // Ce champ ne correspond pas directement à une propriété de l'entité
-                'required' => false, // Facultatif, si l'image n'est pas obligatoire
+                'mapped' => false, 
+                'required' => false,
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,

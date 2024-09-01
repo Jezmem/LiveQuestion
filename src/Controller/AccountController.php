@@ -32,7 +32,6 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Gestion de la mise à jour du profil utilisateur
         $form = $this->createForm(AccountType::class, $user);
         $form->handleRequest($request);
 
@@ -42,7 +41,6 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('app_my_account');
         }
 
-        // Récupération des questions de l'utilisateur
         $userQuestions = $questionRepository->findBy(['user' => $user], ['publicationDate' => 'DESC']);
 
         return $this->render('account/my-account.html.twig', [

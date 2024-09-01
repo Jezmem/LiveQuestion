@@ -17,26 +17,19 @@ class HomeController extends AbstractController
     #[Route('/home', name: 'app_home_index')]
     public function accueil(EntityManagerInterface $entityManager, QuestionRepository $questionRepository, UserRepository $userRepository): Response
     {
-        // Récupérer la dernière question (ordre décroissant par date)
         $derniereQuestion = $entityManager->getRepository(Question::class)
             ->findOneBy([], ['publicationDate' => 'DESC']);
 
-        // Récupérer les trois dernières questions
         $dernieresQuestions = $questionRepository->findBy([], ['publicationDate' => 'DESC'], 3);
 
-        // Récupérer les cinq meilleurs auteurs (par nombre de questions publiées)
         $meilleursAuteurs = $userRepository->findTopAuthors(5);
 
-        // Récupération des trois dernières questions de la catégorie "Sport"
         $sportQuestions = $questionRepository->findByCategoryWithLimit('Sport', 3);
 
-        // Récupérer toutes les questions
         $allQuestions = $questionRepository->findAll();
 
-        // Mélanger les questions
         shuffle($allQuestions);
 
-        // Prendre un sous-ensemble de 5 questions
         $randomQuestions = array_slice($allQuestions, 0, 5);
 
 
@@ -46,7 +39,7 @@ class HomeController extends AbstractController
             'meilleurs_auteurs' => $meilleursAuteurs,
             'sportQuestions' => $sportQuestions,
             'randomQuestions' => $randomQuestions,
-            'now' => new \DateTime(),  // Ajouter la date actuelle
+            'now' => new \DateTime(), 
         ]);
     }
 }
